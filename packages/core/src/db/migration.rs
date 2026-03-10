@@ -56,11 +56,7 @@ impl MigrationEngine {
         let dir = dir.as_ref();
         let mut entries: Vec<_> = std::fs::read_dir(dir)?
             .filter_map(|e| e.ok())
-            .filter(|e| {
-                e.path()
-                    .extension()
-                    .is_some_and(|ext| ext == "sql")
-            })
+            .filter(|e| e.path().extension().is_some_and(|ext| ext == "sql"))
             .collect();
         entries.sort_by_key(|e| e.file_name());
 
@@ -198,8 +194,7 @@ impl MigrationEngine {
     pub fn status(&self) -> Result<Vec<MigrationStatus>> {
         self.ensure_tracking_table()?;
         let conn = self.pool.get()?;
-        let mut stmt =
-            conn.prepare("SELECT version, applied_at FROM _shipkit_migrations")?;
+        let mut stmt = conn.prepare("SELECT version, applied_at FROM _shipkit_migrations")?;
         let applied: HashMap<i64, String> = stmt
             .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?
             .filter_map(|r| r.ok())
@@ -232,8 +227,7 @@ impl MigrationEngine {
 
     fn get_applied(&self) -> Result<HashMap<i64, String>> {
         let conn = self.pool.get()?;
-        let mut stmt =
-            conn.prepare("SELECT version, checksum FROM _shipkit_migrations")?;
+        let mut stmt = conn.prepare("SELECT version, checksum FROM _shipkit_migrations")?;
         let map: HashMap<i64, String> = stmt
             .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?
             .filter_map(|r| r.ok())

@@ -10,7 +10,8 @@ Cargo.lock
 # Node / pnpm
 node_modules/
 **/node_modules/
-pnpm-lock.yaml
+.perf-results/
+.release-results/
 dist/
 **/dist/
 

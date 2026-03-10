@@ -1,0 +1,17 @@
+{
+  "default_channel": "canary",
+  "channels": [
+    {
+      "name": "canary",
+      "description": "Fastest internal validation track for packaged desktop artifacts."
+    },
+    {
+      "name": "beta",
+      "description": "Pre-release validation track after canary artifacts pass smoke and review."
+    },
+    {
+      "name": "stable",
+      "description": "General-availability release track after signing, notarization, and rollback checks."
+    }
+  ]
+}

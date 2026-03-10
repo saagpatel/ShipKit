@@ -1,0 +1,22 @@
+model = "gpt-5.4"
+web_search = "cached"
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+personality = "pragmatic"
+plan_mode_reasoning_effort = "high"
+
+[agents]
+max_threads = 4
+max_depth = 1
+
+[agents.explorer]
+description = "Read-only discovery lane for repo research, specs, and evidence gathering."
+
+[agents.worker]
+description = "Focused implementation lane for bounded code changes inside the current milestone."
+
+[agents.qa]
+description = "Validation lane for tests, CI, smoke checks, and release evidence."
+
+[agents.release]
+description = "Release engineering lane for packaging, signing, notarization, and rollout checks."

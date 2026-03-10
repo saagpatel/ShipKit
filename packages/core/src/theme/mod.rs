@@ -3,4 +3,4 @@
 pub mod detection;
 pub mod engine;
 
-pub use engine::{default_themes, ThemeDefinition, ThemeEngine, ThemeMode};
+pub use engine::{ThemeDefinition, ThemeEngine, ThemeMode, default_themes};

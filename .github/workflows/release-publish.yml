@@ -1,0 +1,123 @@
+name: release-publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Release channel to package and publish
+        required: true
+        default: canary
+        type: choice
+        options:
+          - canary
+          - beta
+          - stable
+
+jobs:
+  macos-release-publish:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      SHIPKIT_RELEASE_CHANNEL: ${{ inputs.channel }}
+      SHIPKIT_RELEASE_HOST: github-releases
+      SHIPKIT_RELEASE_REPOSITORY: ${{ github.repository }}
+      SHIPKIT_RELEASE_ARTIFACT_BASE_URL: ${{ vars.SHIPKIT_RELEASE_ARTIFACT_BASE_URL }}
+      SHIPKIT_RELEASE_NOTES_BASE_URL: ${{ vars.SHIPKIT_RELEASE_NOTES_BASE_URL }}
+      SHIPKIT_TAURI_UPDATER_ENDPOINT: ${{ vars.SHIPKIT_TAURI_UPDATER_ENDPOINT }}
+      SHIPKIT_REQUIRE_SIGNING_SECRETS: "1"
+      SHIPKIT_REQUIRE_UPDATER_SIGNATURE: "1"
+      VITE_SHIPKIT_UPDATE_CHANNEL: ${{ inputs.channel }}
+      VITE_SHIPKIT_RELEASE_HOST: github-releases
+      VITE_SHIPKIT_RELEASE_REPOSITORY: ${{ github.repository }}
+      VITE_SHIPKIT_RELEASE_ARTIFACT_BASE_URL: ${{ vars.SHIPKIT_RELEASE_ARTIFACT_BASE_URL }}
+      VITE_SHIPKIT_TAURI_UPDATER_ENDPOINT: ${{ vars.SHIPKIT_TAURI_UPDATER_ENDPOINT }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SHIPKIT_APPLE_CERTIFICATE_P12_BASE64: ${{ secrets.SHIPKIT_APPLE_CERTIFICATE_P12_BASE64 }}
+      SHIPKIT_APPLE_CERTIFICATE_PASSWORD: ${{ secrets.SHIPKIT_APPLE_CERTIFICATE_PASSWORD }}
+      SHIPKIT_APPLE_SIGNING_IDENTITY: ${{ secrets.SHIPKIT_APPLE_SIGNING_IDENTITY }}
+      SHIPKIT_APPLE_TEAM_ID: ${{ secrets.SHIPKIT_APPLE_TEAM_ID }}
+      SHIPKIT_APPLE_ID: ${{ secrets.SHIPKIT_APPLE_ID }}
+      SHIPKIT_APPLE_APP_PASSWORD: ${{ secrets.SHIPKIT_APPLE_APP_PASSWORD }}
+      SHIPKIT_APPLE_API_KEY_ID: ${{ secrets.SHIPKIT_APPLE_API_KEY_ID }}
+      SHIPKIT_APPLE_API_ISSUER_ID: ${{ secrets.SHIPKIT_APPLE_API_ISSUER_ID }}
+      SHIPKIT_APPLE_API_PRIVATE_KEY: ${{ secrets.SHIPKIT_APPLE_API_PRIVATE_KEY }}
+      SHIPKIT_APPLE_NOTARY_TOOL_PROFILE: ${{ secrets.SHIPKIT_APPLE_NOTARY_TOOL_PROFILE }}
+      SHIPKIT_UPDATER_PRIVATE_KEY: ${{ secrets.SHIPKIT_UPDATER_PRIVATE_KEY }}
+      SHIPKIT_UPDATER_PRIVATE_KEY_PASSWORD: ${{ secrets.SHIPKIT_UPDATER_PRIVATE_KEY_PASSWORD }}
+      SHIPKIT_UPDATER_PUBLIC_KEY: ${{ secrets.SHIPKIT_UPDATER_PUBLIC_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.SHIPKIT_UPDATER_PRIVATE_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.SHIPKIT_UPDATER_PRIVATE_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
+        with:
+          version: 10.28.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run package:smoke
+      - run: pnpm run release:preflight:strict
+      - run: pnpm run updater:scaffold
+      - run: pnpm run release:bundle
+      - run: pnpm run release:validate-feed
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shipkit-release-publish-${{ inputs.channel }}
+          path: .release-results
+          if-no-files-found: error
+          retention-days: 30
+      - id: bundle
+        run: |
+          summary=".release-results/release-bundle-summary-${{ inputs.channel }}-darwin.json"
+          node - "$summary" >> "$GITHUB_OUTPUT" <<'NODE'
+          const fs = require("node:fs");
+          const summaryPath = process.argv[2];
+          const summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
+          const lines = [
+            `summary_path=${summaryPath}`,
+            `release_tag=${summary.release_tag}`,
+            `release_name=${summary.release_name}`,
+            `prerelease=${summary.prerelease}`,
+            `artifact_path=${summary.artifact_path}`,
+            `signature_path=${summary.signature_path ?? ""}`,
+            `manifest_path=${summary.manifest_path}`,
+            `updater_path=${summary.updater_path}`,
+            `latest_manifest_path=${summary.latest_manifest_path}`,
+            `latest_channel_manifest_path=${summary.latest_channel_manifest_path}`,
+            `notes_path=${summary.notes_path}`,
+            `provenance_path=${summary.provenance_path}`,
+          ];
+          process.stdout.write(`${lines.join("\n")}\n`);
+          NODE
+      - name: Publish GitHub release assets
+        run: |
+          tag='${{ steps.bundle.outputs.release_tag }}'
+          title='${{ steps.bundle.outputs.release_name }}'
+          notes='${{ steps.bundle.outputs.notes_path }}'
+          prerelease='${{ steps.bundle.outputs.prerelease }}'
+          assets=(
+            '${{ steps.bundle.outputs.artifact_path }}'
+            '${{ steps.bundle.outputs.manifest_path }}'
+            '${{ steps.bundle.outputs.updater_path }}'
+            '${{ steps.bundle.outputs.latest_manifest_path }}'
+            '${{ steps.bundle.outputs.latest_channel_manifest_path }}'
+            '${{ steps.bundle.outputs.provenance_path }}'
+          )
+          if [ -n '${{ steps.bundle.outputs.signature_path }}' ]; then
+            assets+=('${{ steps.bundle.outputs.signature_path }}')
+          fi
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" "${assets[@]}" --clobber
+          else
+            extra_args=()
+            if [ "$prerelease" = "true" ]; then
+              extra_args+=(--prerelease)
+            fi
+            gh release create "$tag" "${assets[@]}" --title "$title" --notes-file "$notes" "${extra_args[@]}"
+          fi

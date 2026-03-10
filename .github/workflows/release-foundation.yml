@@ -1,0 +1,52 @@
+name: release-foundation
+
+on:
+  workflow_dispatch:
+    inputs:
+      from_channel:
+        description: Source release channel to validate and promote
+        required: true
+        default: canary
+        type: choice
+        options:
+          - canary
+          - beta
+      to_channel:
+        description: Target release channel for promotion
+        required: true
+        default: beta
+        type: choice
+        options:
+          - beta
+          - stable
+
+jobs:
+  macos-release-foundation:
+    runs-on: macos-latest
+    permissions:
+      contents: read
+    env:
+      SHIPKIT_RELEASE_CHANNEL: ${{ inputs.from_channel }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
+        with:
+          version: 10.28.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run package:smoke
+      - run: pnpm run release:preflight
+      - run: pnpm run updater:scaffold
+      - run: pnpm run release:bundle
+      - run: pnpm run release:validate-feed
+      - run: pnpm run release:promote -- --from ${{ inputs.from_channel }} --to ${{ inputs.to_channel }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shipkit-release-foundation-${{ inputs.from_channel }}-to-${{ inputs.to_channel }}
+          path: .release-results
+          if-no-files-found: error
+          retention-days: 14

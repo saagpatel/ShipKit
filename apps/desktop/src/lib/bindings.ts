@@ -24,3 +24,56 @@ export interface LogEntry {
   target: string;
   fields: unknown;
 }
+
+export interface CommandErrorShape {
+  code: string;
+  message: string;
+  details?: string | null;
+}
+
+export interface AppOverview {
+  app_name: string;
+  version: string;
+  platform: string;
+  data_dir: string;
+  database_path: string;
+  log_dir: string;
+  support_dir: string;
+  active_theme: string;
+  pending_migrations: number;
+  applied_migrations: number;
+  enabled_plugins: number;
+  available_plugins: number;
+}
+
+export interface SupportBundleSummary {
+  path: string;
+  generated_at: string;
+  log_entry_count: number;
+}
+
+export interface SupportBundleArtifact {
+  path: string;
+  generated_at: string;
+  size_bytes: number;
+}
+
+export interface DesktopSettings {
+  startup_route: string;
+  default_settings_namespace: string;
+  default_log_level: string;
+  confirm_before_rollback: boolean;
+}
+
+export interface PluginStatus {
+  id: string;
+  name: string;
+  version: string;
+  description: string;
+  category: string;
+  distribution: string;
+  min_shipkit_version: string;
+  compatibility: string;
+  capabilities: string[];
+  enabled: boolean;
+}

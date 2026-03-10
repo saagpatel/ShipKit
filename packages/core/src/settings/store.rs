@@ -33,9 +33,8 @@ impl SqliteSettingsStore {
 impl SettingsBackend for SqliteSettingsStore {
     fn get(&self, namespace: &str, key: &str) -> Result<Option<serde_json::Value>> {
         let conn = self.pool.get()?;
-        let mut stmt = conn.prepare(
-            "SELECT value FROM _shipkit_settings WHERE namespace = ?1 AND key = ?2",
-        )?;
+        let mut stmt =
+            conn.prepare("SELECT value FROM _shipkit_settings WHERE namespace = ?1 AND key = ?2")?;
         let result = stmt.query_row(rusqlite::params![namespace, key], |row| {
             row.get::<_, String>(0)
         });
@@ -59,9 +58,8 @@ impl SettingsBackend for SqliteSettingsStore {
 
     fn get_all(&self, namespace: &str) -> Result<HashMap<String, serde_json::Value>> {
         let conn = self.pool.get()?;
-        let mut stmt = conn.prepare(
-            "SELECT key, value FROM _shipkit_settings WHERE namespace = ?1",
-        )?;
+        let mut stmt =
+            conn.prepare("SELECT key, value FROM _shipkit_settings WHERE namespace = ?1")?;
         let rows = stmt.query_map(rusqlite::params![namespace], |row| {
             Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?))
         })?;
@@ -119,8 +117,12 @@ mod tests {
     #[test]
     fn namespace_isolation() {
         let store = test_store();
-        store.set("ns1", "key", serde_json::json!("a")).expect("set");
-        store.set("ns2", "key", serde_json::json!("b")).expect("set");
+        store
+            .set("ns1", "key", serde_json::json!("a"))
+            .expect("set");
+        store
+            .set("ns2", "key", serde_json::json!("b"))
+            .expect("set");
 
         assert_eq!(
             store.get("ns1", "key").expect("get"),

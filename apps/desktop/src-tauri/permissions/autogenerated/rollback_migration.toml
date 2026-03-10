@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-rollback-migration"
+description = "Enables the rollback_migration command without any pre-configured scope."
+commands.allow = ["rollback_migration"]
+
+[[permission]]
+identifier = "deny-rollback-migration"
+description = "Denies the rollback_migration command without any pre-configured scope."
+commands.deny = ["rollback_migration"]

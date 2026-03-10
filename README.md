@@ -1,15 +1,16 @@
 # ShipKit
 
-> Production-ready building blocks for Tauri 2 desktop applications
+> Tauri 2 desktop foundations plus a production-focused desktop control app
 
-ShipKit is a batteries-included Rust library and desktop app template that provides essential infrastructure for building Tauri applications. It eliminates boilerplate by providing database migrations, settings management, theme system, and structured logging out of the box.
+ShipKit is a Rust workspace and Tauri desktop app focused on the parts teams usually have to rebuild: database migrations, settings management, theming, and structured logging. The repository currently contains a strong shared-core foundation and an actively modernizing desktop product shell.
 
 ## Status
 
-**Phase 2 Complete** — All core modules integrated into a running Tauri 2 desktop app with full IPC coverage.
+**Foundation complete, productization in progress** — the shared Rust modules are real and integrated, and the repo is being upgraded toward truthful verification, a product-grade shell, and release-ready workflows.
 
-- ✅ **Phase 1:** Core library with 4 modules (42 tests, zero clippy warnings)
-- ✅ **Phase 2:** Tauri integration with 13 IPC commands and React frontend demo
+- ✅ Core library with database, settings, theme, and logger modules
+- ✅ Tauri integration with desktop IPC coverage and a working frontend
+- 🚧 Repo truth reset: root scripts, verification, CI parity, and product shell modernization
 
 ## Features
 
@@ -22,10 +23,12 @@ ShipKit is a batteries-included Rust library and desktop app template that provi
 
 ### Desktop App (`shipkit-desktop`)
 
-- **13 IPC Commands** — Full Tauri 2 integration exposing every core module API
-- **React Demo UI** — 4 panels demonstrating migrations, settings CRUD, theme switching, and log viewing
-- **Typed TypeScript Bindings** — Hand-written types matching Rust structs
-- **Persistent State** — Theme preference survives app restarts
+- **25 IPC Commands** — Tauri 2 integration exposing the core module API
+- **Desktop Product Shell** — active modernization from a panel demo into a routed desktop workspace
+- **Curated Plugin Catalog** — signed-only plugin metadata with local enable/disable controls
+- **Updates Admin Surface** — signed-feed inspection, check/install flow, and graceful handling for unsigned local builds
+- **TypeScript Bindings** — currently hand-maintained bindings, with generated contracts planned next
+- **Persistent State** — theme preference survives app restarts
 
 ## Architecture
 
@@ -50,7 +53,8 @@ ShipKit/
 
 - Rust 1.84+ (edition 2024)
 - Node.js 18+ with pnpm
-- macOS (Linux/Windows support planned)
+- macOS as the primary release target
+- Linux and Windows for CI build-smoke validation during the completion program
 
 ### Run the Desktop App
 
@@ -104,23 +108,36 @@ let logger = Logger::init(LoggerConfig::default())?;
 
 ## Development
 
-### Run Tests
+### Run Repo Verification
 
 ```bash
-# Core library + macros (42 tests)
-cargo test -p shipkit-core -p shipkit-macros
-
-# Clippy (workspace-wide, zero warnings required)
-cargo clippy --workspace -- -D warnings
+pnpm run verify
 ```
 
-### Build Frontend
+### Key Commands
 
 ```bash
-cd apps/desktop
-pnpm install
-pnpm build  # TypeScript + Vite bundle
+pnpm run build
+pnpm run test
+pnpm run smoke:desktop
+pnpm run package:smoke
+pnpm run release:tauri-config
+pnpm run release:preflight
+pnpm run updater:scaffold
+pnpm run release:bundle
+pnpm run release:validate-feed
+pnpm run release:rehearse-local-feed
+pnpm run release:manifest
+pnpm run release:promote -- --from canary --to beta
 ```
+
+### Key Docs
+
+- [`docs/product/production-contract.md`](docs/product/production-contract.md)
+- [`docs/product/plugin-catalog.md`](docs/product/plugin-catalog.md)
+- [`docs/release/local-feed-rehearsal.md`](docs/release/local-feed-rehearsal.md)
+- [`docs/release/support-matrix.md`](docs/release/support-matrix.md)
+- [`docs/release/signing-and-updater.md`](docs/release/signing-and-updater.md)
 
 ## API Examples
 
@@ -186,11 +203,12 @@ let logger = Logger::init(LoggerConfig {
 info!(user_id = 42, "User logged in");
 ```
 
-## Roadmap
+## Current Focus
 
-- **Phase 3:** Plugin system for extensibility
-- **Phase 4:** Auto-update mechanism with signature verification
-- **Phase 5:** Cross-platform testing (Linux, Windows)
+- Make the repo truthful: real root scripts, real verify commands, and CI parity
+- Replace the demo grid with a production shell and app-wide theming
+- Harden contracts, settings, migrations, and packaged-build validation
+- Complete the roadmap with plugins, signed updater delivery, and cross-platform support after the base product is stable
 
 ## Technical Details
 
@@ -199,7 +217,7 @@ info!(user_id = 42, "User logged in");
 - **Concurrency:** Mutex for mut operations, RwLock for read/write split
 - **Database:** SQLite with WAL mode, r2d2 connection pooling
 - **Frontend:** React 19, Vite 6, TypeScript 5 (strict mode)
-- **IPC Pattern:** App-level commands (not plugin), `Result<T, String>` error handling
+- **IPC Pattern:** app-level commands today, with structured error envelopes planned as part of hardening
 
 ## License
 

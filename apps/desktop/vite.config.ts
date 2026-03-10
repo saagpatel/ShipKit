@@ -9,4 +9,9 @@ export default defineConfig({
     strictPort: true,
     port: 1420,
   },
+  test: {
+    environment: "jsdom",
+    globals: false,
+    setupFiles: "./src/vitest.setup.ts",
+  },
 });

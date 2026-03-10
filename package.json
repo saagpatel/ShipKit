@@ -1,4 +1,32 @@
 {
   "name": "shipkit",
-  "private": true
+  "private": true,
+  "scripts": {
+    "build": "pnpm run build:desktop && pnpm run build:rust",
+    "build:desktop": "pnpm --dir apps/desktop build",
+    "build:rust": "cargo build --workspace",
+    "dev:desktop": "pnpm --dir apps/desktop tauri dev",
+    "typecheck": "pnpm --dir apps/desktop exec tsc --noEmit",
+    "lint": "cargo clippy --workspace -- -D warnings",
+    "test": "pnpm run test:frontend && pnpm run test:rust",
+    "test:frontend": "pnpm --dir apps/desktop test",
+    "test:rust": "cargo test --workspace",
+    "smoke:desktop": "pnpm --dir apps/desktop tauri build --debug --no-bundle --ci",
+    "package:smoke": "node scripts/release/package-smoke.mjs",
+    "release:manifest": "node scripts/release/generate-release-manifest.mjs",
+    "release:tauri-config": "node scripts/release/generate-tauri-updater-config.mjs",
+    "release:preflight": "node scripts/release/check-macos-signing-env.mjs",
+    "release:preflight:strict": "node scripts/release/check-macos-signing-env.mjs --strict",
+    "release:promote": "node scripts/release/promote-release-manifest.mjs",
+    "release:bundle": "node scripts/release/create-release-bundle.mjs",
+    "release:validate-feed": "node scripts/release/validate-hosted-feed.mjs",
+    "release:rehearse-local-feed": "node scripts/release/rehearse-local-feed.mjs",
+    "updater:scaffold": "node scripts/release/generate-updater-scaffold.mjs",
+    "verify": "bash .codex/scripts/run_verify_commands.sh",
+    "release:check": "pnpm run build && pnpm run test && pnpm run package:smoke && pnpm run release:preflight && pnpm run updater:scaffold && pnpm run release:bundle && pnpm run release:validate-feed",
+    "perf:build": "node scripts/perf/measure-build-time.mjs",
+    "perf:bundle": "node scripts/perf/bundle-report.mjs",
+    "perf:memory": "node --expose-gc scripts/perf/memory-smoke.mjs",
+    "perf:assets": "bash scripts/perf/check-assets.sh"
+  }
 }

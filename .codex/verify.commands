@@ -1,5 +1,16 @@
-# Replace these commands with your repo's canonical checks.
-# Keep order strict: fast static checks first, then behavioral, then docs drift.
-npm run lint
-npm run test
-npm run docs:check
+# codex-os-managed
+pnpm install --frozen-lockfile
+pnpm run typecheck
+pnpm run lint
+pnpm run test
+pnpm run build
+pnpm run smoke:desktop
+pnpm run package:smoke
+pnpm run release:preflight
+pnpm run updater:scaffold
+pnpm run release:bundle
+pnpm run release:validate-feed
+pnpm run perf:build
+pnpm run perf:bundle
+pnpm run perf:memory
+pnpm run perf:assets

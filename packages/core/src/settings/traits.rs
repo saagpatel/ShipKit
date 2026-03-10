@@ -43,9 +43,5 @@ pub trait Settings: Sized + serde::Serialize + serde::de::DeserializeOwned {
     fn get_field(store: &dyn SettingsBackend, field: &str) -> Result<serde_json::Value>;
 
     /// Set one field's value.
-    fn set_field(
-        store: &dyn SettingsBackend,
-        field: &str,
-        value: serde_json::Value,
-    ) -> Result<()>;
+    fn set_field(store: &dyn SettingsBackend, field: &str, value: serde_json::Value) -> Result<()>;
 }

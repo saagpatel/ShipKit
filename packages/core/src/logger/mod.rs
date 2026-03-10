@@ -4,8 +4,8 @@ pub mod config;
 
 pub use config::{LoggerConfig, Rotation};
 
-use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::Layer;
+use tracing_subscriber::layer::SubscriberExt;
 
 use crate::error::{Result, ShipKitError};
 
@@ -51,8 +51,7 @@ impl Logger {
 
         let (non_blocking, guard) = tracing_appender::non_blocking(file_appender);
 
-        let env_filter =
-            tracing_subscriber::EnvFilter::new(config.level.as_str());
+        let env_filter = tracing_subscriber::EnvFilter::new(config.level.as_str());
 
         let file_layer: Box<dyn Layer<_> + Send + Sync> = if config.json_format {
             Box::new(
@@ -61,22 +60,13 @@ impl Logger {
                     .with_writer(non_blocking),
             )
         } else {
-            Box::new(
-                tracing_subscriber::fmt::layer()
-                    .with_writer(non_blocking),
-            )
+            Box::new(tracing_subscriber::fmt::layer().with_writer(non_blocking))
         };
 
         let console_layer: Box<dyn Layer<_> + Send + Sync> = if config.console_output {
-            Box::new(
-                tracing_subscriber::fmt::layer()
-                    .with_writer(std::io::stderr),
-            )
+            Box::new(tracing_subscriber::fmt::layer().with_writer(std::io::stderr))
         } else {
-            Box::new(
-                tracing_subscriber::fmt::layer()
-                    .with_writer(std::io::sink),
-            )
+            Box::new(tracing_subscriber::fmt::layer().with_writer(std::io::sink))
         };
 
         let subscriber = tracing_subscriber::registry()
@@ -148,7 +138,10 @@ pub fn read_log_entries(
                     .and_then(|v| v.as_str())
                     .unwrap_or_default()
                     .to_string(),
-                fields: obj.get("fields").cloned().unwrap_or(serde_json::Value::Null),
+                fields: obj
+                    .get("fields")
+                    .cloned()
+                    .unwrap_or(serde_json::Value::Null),
             })
         })
         .collect();

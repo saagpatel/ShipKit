@@ -1,0 +1,42 @@
+[[set]]
+identifier = "desktop-read"
+description = "Read-only ShipKit desktop commands for status, logs, and persisted state."
+permissions = [
+  "allow-migration-status",
+  "allow-get-setting",
+  "allow-get-all-settings",
+  "allow-load-settings",
+  "allow-get-desktop-settings",
+  "allow-export-desktop-settings",
+  "allow-get-theme",
+  "allow-list-themes",
+  "allow-get-css-variables",
+  "allow-get-log-entries",
+  "allow-get-app-overview",
+  "allow-list-support-bundles",
+  "allow-list-plugins",
+]
+
+[[set]]
+identifier = "desktop-write"
+description = "Mutating ShipKit desktop commands for migrations, settings, and themes."
+permissions = [
+  "allow-apply-migrations",
+  "allow-rollback-migration",
+  "allow-set-setting",
+  "allow-save-settings",
+  "allow-save-desktop-settings",
+  "allow-reset-desktop-settings",
+  "allow-import-desktop-settings",
+  "allow-set-theme",
+  "allow-set-plugin-enabled-state",
+]
+
+[[set]]
+identifier = "desktop-support"
+description = "Support and recovery commands for local artifacts and preference restoration."
+permissions = [
+  "allow-export-support-bundle",
+  "allow-clear-support-bundles",
+  "allow-restore-desktop-settings-from-bundle",
+]

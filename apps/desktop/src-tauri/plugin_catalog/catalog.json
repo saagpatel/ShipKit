@@ -1,0 +1,45 @@
+[
+  {
+    "id": "shipkit.release-brief",
+    "name": "Release Brief",
+    "version": "0.1.0",
+    "description": "Turns packaged release metadata into a concise operator-facing launch brief.",
+    "category": "release",
+    "distribution": "curated-signed",
+    "min_shipkit_version": "0.1.0",
+    "compatibility": "Ready for current macOS-first release workflows.",
+    "capabilities": [
+      "read-release-bundle",
+      "summarize-release-metadata"
+    ]
+  },
+  {
+    "id": "shipkit.runtime-snapshot",
+    "name": "Runtime Snapshot",
+    "version": "0.1.0",
+    "description": "Captures a richer read-only runtime summary for support and validation workflows.",
+    "category": "diagnostics",
+    "distribution": "curated-signed",
+    "min_shipkit_version": "0.1.0",
+    "compatibility": "Safe for local-only desktop support scenarios.",
+    "capabilities": [
+      "read-logs",
+      "read-settings",
+      "export-support-bundle"
+    ]
+  },
+  {
+    "id": "shipkit.migration-audit",
+    "name": "Migration Audit",
+    "version": "0.1.0",
+    "description": "Provides a local migration review checklist before apply or rollback actions.",
+    "category": "database",
+    "distribution": "curated-signed",
+    "min_shipkit_version": "0.1.0",
+    "compatibility": "Pairs with the current database workspace and rollback controls.",
+    "capabilities": [
+      "read-migration-status",
+      "review-rollback-readiness"
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-export-support-bundle"
+description = "Enables the export_support_bundle command without any pre-configured scope."
+commands.allow = ["export_support_bundle"]
+
+[[permission]]
+identifier = "deny-export-support-bundle"
+description = "Denies the export_support_bundle command without any pre-configured scope."
+commands.deny = ["export_support_bundle"]
