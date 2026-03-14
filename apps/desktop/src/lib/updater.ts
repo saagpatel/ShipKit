@@ -70,6 +70,11 @@ function joinUrl(baseUrl: string, path: string): string {
 }
 
 export function getUpdateBuildDefaults(): UpdateBuildDefaults {
+  const bridge = window.__SHIPKIT_E2E_BRIDGE__;
+  if (bridge) {
+    return bridge.getUpdateBuildDefaults();
+  }
+
   const channel = trimmedEnv(import.meta.env.VITE_SHIPKIT_UPDATE_CHANNEL) ?? "canary";
   const host = trimmedEnv(import.meta.env.VITE_SHIPKIT_RELEASE_HOST) ?? "github-releases";
   const repository = trimmedEnv(import.meta.env.VITE_SHIPKIT_RELEASE_REPOSITORY);
@@ -107,6 +112,11 @@ function toSummary(update: NativeUpdate): AvailableUpdateSummary {
 
 export async function checkForUpdates(): Promise<UpdateCheckResult> {
   try {
+    const bridge = window.__SHIPKIT_E2E_BRIDGE__;
+    if (bridge) {
+      return await bridge.checkForUpdates();
+    }
+
     const update = await check();
     return {
       update,
@@ -120,6 +130,11 @@ export async function checkForUpdates(): Promise<UpdateCheckResult> {
 export async function inspectConfiguredFeed(
   manifestUrl: string | null,
 ): Promise<ConfiguredFeedManifest> {
+  const bridge = window.__SHIPKIT_E2E_BRIDGE__;
+  if (bridge) {
+    return bridge.inspectConfiguredFeed(manifestUrl);
+  }
+
   if (!manifestUrl) {
     throw normalizeCommandError({
       code: "updater.feed_not_configured",
@@ -209,6 +224,11 @@ export async function downloadAndInstallUpdate(
   update: NativeUpdate,
   onProgress?: (progress: UpdateDownloadProgress) => void,
 ): Promise<void> {
+  const bridge = window.__SHIPKIT_E2E_BRIDGE__;
+  if (bridge) {
+    return bridge.downloadAndInstallUpdate(update, onProgress);
+  }
+
   let snapshot: UpdateDownloadProgress = {
     phase: "idle",
     downloadedBytes: 0,
@@ -228,6 +248,12 @@ export async function downloadAndInstallUpdate(
 
 export async function relaunchAfterUpdate(): Promise<void> {
   try {
+    const bridge = window.__SHIPKIT_E2E_BRIDGE__;
+    if (bridge) {
+      await bridge.relaunchAfterUpdate();
+      return;
+    }
+
     await relaunch();
   } catch (error) {
     throw normalizeCommandError(error);

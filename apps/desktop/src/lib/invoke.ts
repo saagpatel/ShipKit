@@ -2,6 +2,7 @@ import { invoke as tauriInvoke } from "@tauri-apps/api/core";
 import type {
   AppOverview,
   CommandErrorShape,
+  DatabaseOverview,
   DesktopSettings,
   LogEntry,
   MigrationStatus,
@@ -74,6 +75,11 @@ async function invokeCommand<T>(
   args?: Record<string, unknown>,
 ): Promise<T> {
   try {
+    const bridge = window.__SHIPKIT_E2E_BRIDGE__;
+    if (bridge) {
+      return await bridge.invoke<T>(command, args);
+    }
+
     return await tauriInvoke<T>(command, args);
   } catch (error) {
     throw normalizeCommandError(error);
@@ -81,6 +87,9 @@ async function invokeCommand<T>(
 }
 
 // Database
+export const getDatabaseOverview = () =>
+  invokeCommand<DatabaseOverview>("get_database_overview");
+
 export const migrationStatus = () =>
   invokeCommand<MigrationStatus[]>("migration_status");
 

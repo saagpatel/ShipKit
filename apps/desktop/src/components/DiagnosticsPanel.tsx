@@ -21,20 +21,28 @@ export function DiagnosticsPanel() {
   const [isExporting, setIsExporting] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
   const [restoringBundlePath, setRestoringBundlePath] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = () => {
+    setIsLoading(true);
     setError(null);
     Promise.all([getAppOverview(), listSupportBundles()])
       .then(([nextOverview, nextBundles]) => {
         setOverview(nextOverview);
         setBundleArtifacts(nextBundles);
       })
-      .catch((nextError: unknown) => setError(formatCommandError(nextError)));
+      .catch((nextError: unknown) => setError(formatCommandError(nextError)))
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {
     refresh();
+    window.addEventListener("shipkit:plugins-updated", refresh as EventListener);
+
+    return () => {
+      window.removeEventListener("shipkit:plugins-updated", refresh as EventListener);
+    };
   }, []);
 
   const handleExport = () => {
@@ -44,7 +52,11 @@ export function DiagnosticsPanel() {
       .then((summary) => {
         setBundle(summary);
         setSupportStatus(
-          `Support bundle exported with ${summary.log_entry_count} recent log entries.`,
+          `Support bundle exported with ${summary.log_entry_count} recent log entries. ${
+            summary.enabled_plugin_names.length > 0
+              ? `Enabled plugins: ${summary.enabled_plugin_names.join(", ")}.`
+              : "No curated plugins were enabled when the bundle was captured."
+          }`,
         );
         return Promise.all([getAppOverview(), listSupportBundles()]);
       })
@@ -112,9 +124,11 @@ export function DiagnosticsPanel() {
           <span className="status-label">Platform</span>
           <strong>{overview?.platform ?? "Loading..."}</strong>
           <p>
-            {overview
+            {isLoading
+              ? "Reading runtime metadata."
+              : overview
               ? `${overview.app_name} ${overview.version}`
-              : "Reading runtime metadata."}
+              : "Runtime metadata is unavailable."}
           </p>
         </article>
         <article className="status-card">
@@ -130,9 +144,11 @@ export function DiagnosticsPanel() {
               : "Loading..."}
           </strong>
           <p>
-            {overview
+            {isLoading
+              ? "Checking migration status."
+              : overview
               ? `${overview.pending_migrations} pending migration(s) remain.`
-              : "Checking migration status."}
+              : "Migration status is unavailable."}
           </p>
         </article>
         <article className="status-card">
@@ -143,9 +159,11 @@ export function DiagnosticsPanel() {
               : "Loading..."}
           </strong>
           <p>
-            {overview
+            {isLoading
+              ? "Checking curated plugin state."
+              : overview
               ? `${overview.enabled_plugins} curated plugin(s) enabled in this workspace.`
-              : "Checking curated plugin state."}
+              : "Curated plugin state is unavailable."}
           </p>
         </article>
       </div>
@@ -157,12 +175,17 @@ export function DiagnosticsPanel() {
             <h3>Capture current local state</h3>
           </div>
           <div className="panel-actions">
-            <button className="panel-button" onClick={refresh} type="button">
-              Refresh
+            <button
+              className="panel-button"
+              disabled={isLoading || isExporting}
+              onClick={refresh}
+              type="button"
+            >
+              {isLoading ? "Refreshing..." : "Refresh"}
             </button>
             <button
               className="panel-button is-active"
-              disabled={isExporting}
+              disabled={isExporting || isLoading}
               onClick={handleExport}
               type="button"
             >
@@ -198,6 +221,13 @@ export function DiagnosticsPanel() {
           <p>
             You can restore desktop preferences from any saved bundle below.
           </p>
+          {bundle ? (
+            <p>
+              {bundle.enabled_plugin_names.length > 0
+                ? `Latest bundle includes ${bundle.enabled_plugin_names.join(", ")}.`
+                : "Latest bundle captured no enabled plugins."}
+            </p>
+          ) : null}
         </div>
       </section>
 

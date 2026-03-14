@@ -48,6 +48,7 @@ pub struct SupportBundleSummary {
     pub path: String,
     pub generated_at: String,
     pub log_entry_count: usize,
+    pub enabled_plugin_names: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]

@@ -1,16 +1,16 @@
 # ShipKit
 
-> Tauri 2 desktop foundations plus a production-focused desktop control app
+> Tauri 2 desktop foundations plus a local-first macOS desktop control app
 
 ShipKit is a Rust workspace and Tauri desktop app focused on the parts teams usually have to rebuild: database migrations, settings management, theming, and structured logging. The repository currently contains a strong shared-core foundation and an actively modernizing desktop product shell.
 
 ## Status
 
-**Foundation complete, productization in progress** — the shared Rust modules are real and integrated, and the repo is being upgraded toward truthful verification, a product-grade shell, and release-ready workflows.
+**Foundation complete, local macOS hardening in progress** — the shared Rust modules are real and integrated, and the repo is currently focused on truthful verification, a product-grade local shell, and repeatable Mac operator workflows.
 
 - ✅ Core library with database, settings, theme, and logger modules
 - ✅ Tauri integration with desktop IPC coverage and a working frontend
-- 🚧 Repo truth reset: root scripts, verification, CI parity, and product shell modernization
+- 🚧 Local macOS operator hardening: setup truth, UI smoke automation, deeper product surfaces, and runbook quality
 
 ## Features
 
@@ -26,8 +26,8 @@ ShipKit is a Rust workspace and Tauri desktop app focused on the parts teams usu
 - **25 IPC Commands** — Tauri 2 integration exposing the core module API
 - **Desktop Product Shell** — active modernization from a panel demo into a routed desktop workspace
 - **Curated Plugin Catalog** — signed-only plugin metadata with local enable/disable controls
-- **Updates Admin Surface** — signed-feed inspection, check/install flow, and graceful handling for unsigned local builds
-- **TypeScript Bindings** — currently hand-maintained bindings, with generated contracts planned next
+- **Updates Admin Surface** — local-only updater posture, signed-feed inspection, and graceful handling for builds without embedded release credentials
+- **TypeScript Bindings** — checked TypeScript/Rust contracts with additive desktop summaries
 - **Persistent State** — theme preference survives app restarts
 
 ## Architecture
@@ -53,14 +53,26 @@ ShipKit/
 
 - Rust 1.84+ (edition 2024)
 - Node.js 22 LTS with pnpm
-- macOS as the primary release target
-- Linux and Windows for CI build-smoke validation during the completion program
+- macOS as the only supported product platform for this milestone
+- Xcode Command Line Tools
+
+### Validate This Mac First
+
+```bash
+pnpm run doctor:mac
+```
+
+### Install Browser Support For UI Smoke
+
+```bash
+pnpm --dir apps/desktop exec playwright install chromium
+```
 
 ### Run the Desktop App
 
 ```bash
 # Install dependencies
-pnpm install
+pnpm install --frozen-lockfile
 
 # Run in normal dev mode (faster warm rebuilds, more disk usage)
 pnpm run dev:desktop
@@ -114,11 +126,20 @@ let logger = Logger::init(LoggerConfig::default())?;
 pnpm run verify
 ```
 
+### Local Smoke Sequence
+
+```bash
+pnpm run test:e2e
+pnpm run smoke:desktop
+pnpm run package:smoke
+```
+
 ### Key Commands
 
 ```bash
 pnpm run build
 pnpm run test
+pnpm run test:e2e
 pnpm run smoke:desktop
 pnpm run package:smoke
 pnpm run release:tauri-config
@@ -134,6 +155,8 @@ pnpm run release:promote -- --from canary --to beta
 ### Key Docs
 
 - [`docs/product/production-contract.md`](docs/product/production-contract.md)
+- [`docs/ops/macos-local-setup.md`](docs/ops/macos-local-setup.md)
+- [`docs/ops/local-smoke-runbook.md`](docs/ops/local-smoke-runbook.md)
 - [`docs/product/plugin-catalog.md`](docs/product/plugin-catalog.md)
 - [`docs/release/local-feed-rehearsal.md`](docs/release/local-feed-rehearsal.md)
 - [`docs/release/support-matrix.md`](docs/release/support-matrix.md)
@@ -205,10 +228,10 @@ info!(user_id = 42, "User logged in");
 
 ## Current Focus
 
-- Make the repo truthful: real root scripts, real verify commands, and CI parity
-- Replace the demo grid with a production shell and app-wide theming
-- Harden contracts, settings, migrations, and packaged-build validation
-- Complete the roadmap with plugins, signed updater delivery, and cross-platform support after the base product is stable
+- Make the repo truthful: real root scripts, real verify commands, and Mac-only CI parity
+- Deepen the migration, plugins, diagnostics, and local-only updater product surfaces
+- Harden contracts, setup docs, smoke automation, and packaged-build validation
+- Resume signed updater delivery only after the local macOS product is fully settled
 
 ## Technical Details
 
@@ -217,7 +240,7 @@ info!(user_id = 42, "User logged in");
 - **Concurrency:** Mutex for mut operations, RwLock for read/write split
 - **Database:** SQLite with WAL mode, r2d2 connection pooling
 - **Frontend:** React 19, Vite 6, TypeScript 5 (strict mode)
-- **IPC Pattern:** app-level commands today, with structured error envelopes planned as part of hardening
+- **IPC Pattern:** app-level commands with structured error envelopes and browser-hosted E2E bridge support for operator smoke
 
 ## License
 
@@ -225,7 +248,7 @@ MIT
 
 ## Contributing
 
-Contributions welcome! This is a early-stage project under active development.
+Contributions welcome! This is an early-stage macOS-focused project under active development.
 
 1. Fork the repo
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)

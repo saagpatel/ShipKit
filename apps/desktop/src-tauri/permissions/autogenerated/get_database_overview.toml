@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-get-database-overview"
+description = "Enables the get_database_overview command without any pre-configured scope."
+commands.allow = ["get_database_overview"]
+
+[[permission]]
+identifier = "deny-get-database-overview"
+description = "Denies the get_database_overview command without any pre-configured scope."
+commands.deny = ["get_database_overview"]

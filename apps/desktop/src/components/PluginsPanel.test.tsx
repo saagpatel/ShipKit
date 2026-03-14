@@ -12,7 +12,7 @@ const initialPlugins = [
     category: "release",
     distribution: "curated-signed",
     min_shipkit_version: "0.1.0",
-    compatibility: ">=0.1.0",
+    compatibility: "Ready for current macOS-first release workflows.",
     capabilities: ["release", "notes"],
     enabled: true,
   },
@@ -24,7 +24,7 @@ const initialPlugins = [
     category: "diagnostics",
     distribution: "curated-signed",
     min_shipkit_version: "0.1.0",
-    compatibility: ">=0.1.0",
+    compatibility: "Safe for local-only desktop support scenarios.",
     capabilities: ["diagnostics"],
     enabled: false,
   },
@@ -72,7 +72,7 @@ describe("PluginsPanel", () => {
       await screen.findByText(/curated plugin manifests bundled/i),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(/catalog categories available in this workspace/i),
+      await screen.findByText(/curated plugins that already fit the current local product slice/i),
     ).toBeInTheDocument();
     expect(await screen.findByText("Release Brief 1.0.0")).toBeInTheDocument();
     expect(await screen.findByText("Runtime Snapshot 1.0.0")).toBeInTheDocument();
@@ -101,6 +101,23 @@ describe("PluginsPanel", () => {
     window.removeEventListener("shipkit:plugins-updated", updateSpy);
   });
 
+  it("filters the catalog down to an empty state when no plugin matches", async () => {
+    render(<PluginsPanel />);
+
+    await screen.findByText("Release Brief 1.0.0");
+
+    fireEvent.change(screen.getByLabelText(/enabled state/i), {
+      target: { value: "disabled" },
+    });
+    fireEvent.change(screen.getByLabelText(/category/i), {
+      target: { value: "release" },
+    });
+
+    expect(
+      await screen.findByText(/no plugins match the current filters/i),
+    ).toBeInTheDocument();
+  });
+
   it("shows a structured error when catalog refresh fails", async () => {
     vi.mocked(listPlugins).mockRejectedValueOnce({
       code: "plugins.list_failed",
@@ -112,6 +129,23 @@ describe("PluginsPanel", () => {
 
     expect(
       await screen.findByText("Plugin catalog is unavailable. (plugins.list_failed)"),
+    ).toBeInTheDocument();
+  });
+
+  it("shows a structured error when a plugin toggle fails", async () => {
+    vi.mocked(setPluginEnabledState).mockRejectedValueOnce({
+      code: "plugins.save_failed",
+      message: "Plugin state could not be saved.",
+      details: "settings store unavailable",
+    });
+
+    render(<PluginsPanel />);
+
+    expect(await screen.findByText("Runtime Snapshot 1.0.0")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /enable plugin/i }));
+
+    expect(
+      await screen.findByText("Plugin state could not be saved. (plugins.save_failed)"),
     ).toBeInTheDocument();
   });
 });

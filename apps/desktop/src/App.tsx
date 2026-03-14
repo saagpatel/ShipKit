@@ -59,7 +59,7 @@ const routes: RouteConfig[] = [
   {
     route: "updates",
     title: "Updates",
-    description: "Check the feed and install updates.",
+    description: "Review the local-only updater posture.",
   },
   {
     route: "plugins",
@@ -158,7 +158,7 @@ function App() {
       <aside className="app-sidebar">
         <p className="eyebrow">Execution Console</p>
         <h1>ShipKit</h1>
-        <p>One desktop workspace for local control surfaces.</p>
+        <p>One macOS workspace for local control surfaces.</p>
 
         <nav className="nav-list" aria-label="Primary">
           {routes.map((entry) => (
@@ -178,7 +178,7 @@ function App() {
 
         <div className="sidebar-footer">
           <strong>Current track</strong>
-          <span>Ship the core desktop path with clear verification.</span>
+          <span>Harden the local macOS path with truthful verification.</span>
         </div>
       </aside>
 
@@ -190,7 +190,7 @@ function App() {
               <p className="workspace-title">{activeRoute.title}</p>
               <p>{activeRoute.description}</p>
             </div>
-            <span className="header-badge">macOS-first</span>
+            <span className="header-badge">macOS local-only</span>
           </header>
 
           <div className="workspace-body">{renderRoute()}</div>

@@ -181,8 +181,8 @@ describe("UpdatesPanel", () => {
 
   it("shows an unconfigured build hint when no feed is embedded", async () => {
     vi.mocked(getUpdateBuildDefaults).mockReturnValue({
-      channel: "canary",
-      host: "github-releases",
+      channel: "local",
+      host: "local-dev",
       repository: null,
       manifestUrl: null,
     });
@@ -190,5 +190,10 @@ describe("UpdatesPanel", () => {
     render(<UpdatesPanel />);
 
     expect(await screen.findByText("Not embedded in this build yet")).toBeInTheDocument();
+    expect(
+      await screen.findByText(/this is a local-only macOS build/i),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /local build only/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /feed not embedded/i })).toBeDisabled();
   });
 });

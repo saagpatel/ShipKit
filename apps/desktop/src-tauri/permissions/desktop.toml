@@ -2,6 +2,7 @@
 identifier = "desktop-read"
 description = "Read-only ShipKit desktop commands for status, logs, and persisted state."
 permissions = [
+  "allow-get-database-overview",
   "allow-migration-status",
   "allow-get-setting",
   "allow-get-all-settings",

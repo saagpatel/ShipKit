@@ -4,7 +4,30 @@ import App from "./App";
 import { getAppOverview, getDesktopSettings } from "./lib/invoke";
 
 vi.mock("./lib/invoke", () => ({
-  migrationStatus: vi.fn().mockResolvedValue([]),
+  getDatabaseOverview: vi.fn().mockResolvedValue({
+    total_registered: 2,
+    applied_count: 1,
+    pending_count: 1,
+    last_applied_version: 1,
+    last_applied_name: "create_notes",
+    rollback_available: true,
+    rollback_reason: null,
+    operation_warning: "1 migration(s) still need to be applied in this workspace.",
+  }),
+  migrationStatus: vi.fn().mockResolvedValue([
+    {
+      version: 1,
+      name: "create_notes",
+      applied: true,
+      applied_at: "2026-03-10T00:00:00Z",
+    },
+    {
+      version: 2,
+      name: "add_operator_flags",
+      applied: false,
+      applied_at: null,
+    },
+  ]),
   applyMigrations: vi.fn().mockResolvedValue([]),
   rollbackMigration: vi.fn().mockResolvedValue(null),
   formatCommandError: vi.fn((error: unknown) => {
@@ -56,7 +79,10 @@ vi.mock("./lib/invoke", () => ({
   }),
   getTheme: vi.fn().mockResolvedValue({ name: "ocean", mode: "dark", variables: {} }),
   setTheme: vi.fn().mockResolvedValue({ name: "ocean", mode: "dark", variables: {} }),
-  listThemes: vi.fn().mockResolvedValue([{ name: "ocean", mode: "dark", variables: {} }]),
+  listThemes: vi.fn().mockResolvedValue([
+    { name: "ocean", mode: "dark", variables: {} },
+    { name: "sunrise", mode: "light", variables: {} },
+  ]),
   getCssVariables: vi.fn().mockResolvedValue(":root { --sk-accent: #4e84ff; }"),
   getLogEntries: vi.fn().mockResolvedValue([]),
   getAppOverview: vi.fn().mockResolvedValue({
@@ -77,6 +103,7 @@ vi.mock("./lib/invoke", () => ({
     path: "/tmp/shipkit/support/support-bundle.json",
     generated_at: "2026-03-10T00:00:00Z",
     log_entry_count: 8,
+    enabled_plugin_names: ["Release Brief"],
   }),
   listSupportBundles: vi.fn().mockResolvedValue([
     {
@@ -101,7 +128,7 @@ vi.mock("./lib/invoke", () => ({
       category: "release",
       distribution: "curated-signed",
       min_shipkit_version: "0.1.0",
-      compatibility: ">=0.1.0",
+      compatibility: "Ready for current macOS-first release workflows.",
       capabilities: ["release", "notes"],
       enabled: true,
     },
@@ -113,7 +140,7 @@ vi.mock("./lib/invoke", () => ({
       category: "diagnostics",
       distribution: "curated-signed",
       min_shipkit_version: "0.1.0",
-      compatibility: ">=0.1.0",
+      compatibility: "Safe for local-only desktop support scenarios.",
       capabilities: ["diagnostics"],
       enabled: false,
     },

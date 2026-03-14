@@ -1,8 +1,21 @@
 use crate::api::CommandError;
-use shipkit_core::MigrationStatus;
+use shipkit_core::{MigrationOverview, MigrationStatus};
 use tauri::State;
 
 use crate::state::AppState;
+
+#[tauri::command]
+pub fn get_database_overview(
+    state: State<'_, AppState>,
+) -> Result<MigrationOverview, CommandError> {
+    let engine = state
+        .migrations
+        .lock()
+        .map_err(|err| CommandError::from_display("migration.lock_failed", err))?;
+    engine
+        .status_overview()
+        .map_err(|err| CommandError::from_display("migration.overview_failed", err))
+}
 
 #[tauri::command]
 pub fn migration_status(state: State<'_, AppState>) -> Result<Vec<MigrationStatus>, CommandError> {

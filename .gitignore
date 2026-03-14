@@ -14,6 +14,10 @@ node_modules/
 .release-results/
 dist/
 **/dist/
+playwright-report/
+**/playwright-report/
+test-results/
+**/test-results/
 
 # Tauri build artifacts
 **/src-tauri/target/

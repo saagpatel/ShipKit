@@ -17,7 +17,7 @@ jobs:
           version: 10.28.1
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: 20
+          node-version: 22
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
       - run: pnpm run perf:bundle
@@ -33,7 +33,7 @@ jobs:
           version: 10.28.1
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: 20
+          node-version: 22
       - run: pnpm install --frozen-lockfile
       - run: pnpm run perf:build
 
@@ -48,7 +48,7 @@ jobs:
           version: 10.28.1
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: 20
+          node-version: 22
       - run: pnpm install --frozen-lockfile
       - run: pnpm run perf:assets
 
@@ -63,6 +63,6 @@ jobs:
           version: 10.28.1
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: 20
+          node-version: 22
       - run: pnpm install --frozen-lockfile
       - run: pnpm run perf:memory

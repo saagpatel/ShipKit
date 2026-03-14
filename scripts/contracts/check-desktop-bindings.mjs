@@ -93,6 +93,11 @@ assertEqual(
   extractRustStructFields(migrationRs, "MigrationStatus"),
 );
 assertEqual(
+  "DatabaseOverview fields",
+  extractTsInterfaceFields(tsBindings, "DatabaseOverview"),
+  extractRustStructFields(migrationRs, "MigrationOverview"),
+);
+assertEqual(
   "ThemeMode variants",
   extractTsUnionValues(tsBindings, "ThemeMode"),
   extractRustEnumVariants(themeRs, "ThemeMode"),
