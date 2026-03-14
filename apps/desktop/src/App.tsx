@@ -156,9 +156,9 @@ function App() {
       {themeCss ? <style>{themeCss}</style> : null}
 
       <aside className="app-sidebar">
-        <p className="eyebrow">Execution Console</p>
+        <p className="eyebrow">macOS operator console</p>
         <h1>ShipKit</h1>
-        <p>One macOS workspace for local control surfaces.</p>
+        <p>One local macOS workspace for runtime control and support tasks.</p>
 
         <nav className="nav-list" aria-label="Primary">
           {routes.map((entry) => (
@@ -178,7 +178,7 @@ function App() {
 
         <div className="sidebar-footer">
           <strong>Current track</strong>
-          <span>Harden the local macOS path with truthful verification.</span>
+          <span>Run a reliable local macOS workflow with truthful verification.</span>
         </div>
       </aside>
 

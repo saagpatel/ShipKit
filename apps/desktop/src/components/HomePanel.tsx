@@ -123,6 +123,7 @@ export function HomePanel() {
             <li>Use Logs to review recent events.</li>
             <li>Use Diagnostics to export a support bundle.</li>
             <li>Use Plugins to enable curated modules.</li>
+            <li>Use Updates to confirm the local-only updater posture.</li>
           </ul>
         </section>
 

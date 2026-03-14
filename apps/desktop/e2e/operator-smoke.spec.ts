@@ -62,7 +62,7 @@ test.describe("ShipKit operator smoke", () => {
       page.getByText(/local-only macOS build/i),
     ).toBeVisible();
     await expect(
-      page.getByRole("button", { name: /local build only/i }),
+      page.getByRole("button", { name: /live updates deferred/i }),
     ).toBeDisabled();
 
     await page.evaluate(() => {

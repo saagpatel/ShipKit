@@ -193,7 +193,9 @@ describe("UpdatesPanel", () => {
     expect(
       await screen.findByText(/this is a local-only macOS build/i),
     ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /local build only/i })).toBeDisabled();
-    expect(screen.getByRole("button", { name: /feed not embedded/i })).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: /live updates deferred/i }),
+    ).toBeDisabled();
+    expect(screen.getByRole("button", { name: /feed deferred/i })).toBeDisabled();
   });
 });

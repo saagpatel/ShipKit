@@ -143,7 +143,9 @@ export function UpdatesPanel() {
           <p className="eyebrow">Release control</p>
           <h2>Updates</h2>
           <p className="page-copy">
-            Check the release feed, install newer builds, and relaunch safely.
+            {isLocalOnlyBuild
+              ? "Review the local-only update posture and confirm this build is intentionally running without an embedded feed."
+              : "Check the release feed, install newer builds, and relaunch safely."}
           </p>
         </div>
       </header>
@@ -184,7 +186,11 @@ export function UpdatesPanel() {
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Signed feed</p>
-            <h3>Check for a newer release</h3>
+            <h3>
+              {isLocalOnlyBuild
+                ? "Review local update posture"
+                : "Check for a newer release"}
+            </h3>
           </div>
           <div className="panel-actions">
             <button
@@ -194,7 +200,7 @@ export function UpdatesPanel() {
               type="button"
             >
               {isLocalOnlyBuild
-                ? "Feed Not Embedded"
+                ? "Feed Deferred"
                 : isInspectingFeed
                   ? "Validating Feed..."
                   : "Validate Feed Endpoint"}
@@ -206,7 +212,7 @@ export function UpdatesPanel() {
               type="button"
             >
               {isLocalOnlyBuild
-                ? "Local Build Only"
+                ? "Live Updates Deferred"
                 : isChecking
                   ? "Checking..."
                   : "Check for Updates"}

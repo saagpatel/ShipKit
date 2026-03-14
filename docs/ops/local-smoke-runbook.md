@@ -47,6 +47,12 @@ pnpm run package:smoke
 - Perf outputs:
   - `.perf-results/`
 
+## Interpreting `doctor:mac`
+
+- A pass means the Mac is aligned with the repo-supported local lane.
+- A fail should be treated as an environment issue first, not as an app bug.
+- The current most likely failure is Node not being on version 22.
+
 ## Common failure checks
 
 - Unit tests fail after contract changes:

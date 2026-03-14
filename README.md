@@ -62,6 +62,15 @@ ShipKit/
 pnpm run doctor:mac
 ```
 
+`pnpm run doctor:mac` is read-only. It checks whether this Mac matches the
+current ShipKit workflow and points to the fix when something is missing.
+
+### Install Project Dependencies
+
+```bash
+pnpm install --frozen-lockfile
+```
+
 ### Install Browser Support For UI Smoke
 
 ```bash
@@ -71,9 +80,6 @@ pnpm --dir apps/desktop exec playwright install chromium
 ### Run the Desktop App
 
 ```bash
-# Install dependencies
-pnpm install --frozen-lockfile
-
 # Run in normal dev mode (faster warm rebuilds, more disk usage)
 pnpm run dev:desktop
 ```
@@ -129,10 +135,15 @@ pnpm run verify
 ### Local Smoke Sequence
 
 ```bash
+pnpm run doctor:mac
 pnpm run test:e2e
 pnpm run smoke:desktop
 pnpm run package:smoke
 ```
+
+Signed release publication remains intentionally deferred for this milestone.
+The release commands below stay in the repo for rehearsal and future handoff,
+not because live credentials are required for local development.
 
 ### Key Commands
 
