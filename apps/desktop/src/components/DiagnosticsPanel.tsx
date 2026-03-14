@@ -91,8 +91,7 @@ export function DiagnosticsPanel() {
           <p className="eyebrow">Support and recovery</p>
           <h2>Diagnostics</h2>
           <p className="page-copy">
-            Review runtime paths, confirm migration readiness, and manage support
-            bundles that capture current local state for debugging.
+            Review runtime paths and manage support bundles for local debugging.
           </p>
         </div>
       </header>
@@ -193,13 +192,11 @@ export function DiagnosticsPanel() {
 
         <div className="panel-note">
           <p>
-            The exported bundle includes runtime metadata, storage paths,
-            migration status, plugin state, desktop preferences, theme state,
+            The bundle includes runtime metadata, paths, preferences, plugin state,
             and recent log entries.
           </p>
           <p>
-            You can restore desktop preferences from any saved bundle in the
-            recovery list below.
+            You can restore desktop preferences from any saved bundle below.
           </p>
         </div>
       </section>

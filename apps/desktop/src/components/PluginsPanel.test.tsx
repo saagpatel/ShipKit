@@ -69,10 +69,10 @@ describe("PluginsPanel", () => {
 
     expect(await screen.findByRole("heading", { name: "Plugins" })).toBeInTheDocument();
     expect(
-      await screen.findByText(/curated plugin manifests currently bundled/i),
+      await screen.findByText(/curated plugin manifests bundled/i),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(/current catalog spread across runtime, diagnostics, and release tasks/i),
+      await screen.findByText(/catalog categories available in this workspace/i),
     ).toBeInTheDocument();
     expect(await screen.findByText("Release Brief 1.0.0")).toBeInTheDocument();
     expect(await screen.findByText("Runtime Snapshot 1.0.0")).toBeInTheDocument();

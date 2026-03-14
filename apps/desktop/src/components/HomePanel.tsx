@@ -54,8 +54,7 @@ export function HomePanel() {
           <p className="eyebrow">ShipKit Desktop</p>
           <h2>Home</h2>
           <p className="page-copy">
-            Monitor your local runtime, check migration readiness, and jump into
-            the tools that keep a ShipKit-powered app healthy.
+            Monitor runtime health and jump into the main control surfaces.
           </p>
         </div>
       </header>
@@ -100,17 +99,17 @@ export function HomePanel() {
       <section className="panel-card">
         <div className="panel-heading">
           <div>
-            <p className="eyebrow">Quick orientation</p>
-            <h3>What to check first</h3>
+            <p className="eyebrow">Quick start</p>
+            <h3>Check these first</h3>
           </div>
         </div>
         <ul className="bullet-list">
-          <li>Open Database to apply or review pending migrations.</li>
-          <li>Use Settings to inspect persisted app configuration.</li>
-          <li>Use Theme to preview the active CSS variables.</li>
-          <li>Use Logs to confirm the last runtime events and errors.</li>
-          <li>Use Diagnostics to export a support bundle before deeper debugging.</li>
-          <li>Use Plugins to enable the curated extensions you want in this workspace.</li>
+          <li>Check Database for pending migrations.</li>
+          <li>Use Settings for startup and recovery preferences.</li>
+          <li>Use Theme to confirm active CSS variables.</li>
+          <li>Use Logs to review recent events.</li>
+          <li>Use Diagnostics to export a support bundle.</li>
+          <li>Use Plugins to enable curated modules.</li>
         </ul>
       </section>
     </section>

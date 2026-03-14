@@ -29,42 +29,42 @@ const routes: RouteConfig[] = [
   {
     route: "home",
     title: "Home",
-    description: "Status, quick orientation, and current runtime summary.",
+    description: "Runtime summary and quick actions.",
   },
   {
     route: "database",
     title: "Database",
-    description: "Review migration readiness and apply or rollback safely.",
+    description: "Review, apply, and rollback migrations.",
   },
   {
     route: "settings",
     title: "Settings",
-    description: "Inspect and update persisted app configuration.",
+    description: "Edit persisted app settings.",
   },
   {
     route: "theme",
     title: "Theme",
-    description: "Preview active theme variables and switch modes.",
+    description: "Switch themes and inspect CSS.",
   },
   {
     route: "logs",
     title: "Logs",
-    description: "Inspect recent runtime activity and exported diagnostics.",
+    description: "Review recent runtime activity.",
   },
   {
     route: "diagnostics",
     title: "Diagnostics",
-    description: "Review runtime paths and export a local support bundle.",
+    description: "Review paths and export support bundles.",
   },
   {
     route: "updates",
     title: "Updates",
-    description: "Check the signed feed, install a newer build, and relaunch safely.",
+    description: "Check the feed and install updates.",
   },
   {
     route: "plugins",
     title: "Plugins",
-    description: "Review the curated plugin catalog and enable the modules you trust.",
+    description: "Manage the curated plugin catalog.",
   },
 ];
 
@@ -124,7 +124,7 @@ function App() {
       routes.find((entry) => entry.route === route) ?? {
         route: "home",
         title: "Home",
-        description: "Status, quick orientation, and current runtime summary.",
+        description: "Runtime summary and quick actions.",
       },
     [route],
   );
@@ -158,7 +158,7 @@ function App() {
       <aside className="app-sidebar">
         <p className="eyebrow">Execution Console</p>
         <h1>ShipKit</h1>
-        <p>One desktop workspace for migrations, settings, theme, and logs.</p>
+        <p>One desktop workspace for local control surfaces.</p>
 
         <nav className="nav-list" aria-label="Primary">
           {routes.map((entry) => (
@@ -178,7 +178,7 @@ function App() {
 
         <div className="sidebar-footer">
           <strong>Current track</strong>
-          <span>Repo truth, shell productization, and desktop hardening.</span>
+          <span>Ship the core desktop path with clear verification.</span>
         </div>
       </aside>
 
@@ -190,7 +190,7 @@ function App() {
               <p className="workspace-title">{activeRoute.title}</p>
               <p>{activeRoute.description}</p>
             </div>
-            <span className="header-badge">macOS-first production path</span>
+            <span className="header-badge">macOS-first</span>
           </header>
 
           <div className="workspace-body">{renderRoute()}</div>

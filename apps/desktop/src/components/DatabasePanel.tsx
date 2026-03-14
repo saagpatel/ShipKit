@@ -67,8 +67,7 @@ export function DatabasePanel() {
           <p className="eyebrow">Data safety</p>
           <h2>Database</h2>
           <p className="page-copy">
-            Review registered migrations, apply pending changes, and rollback the
-            most recent step when you need a safe local recovery.
+            Review migrations, apply pending changes, and rollback the latest step.
           </p>
           <p className="panel-muted">
             Rollback confirmation is{" "}

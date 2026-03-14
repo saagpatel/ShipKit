@@ -52,9 +52,7 @@ export function PluginsPanel() {
           <p className="eyebrow">Curated extensions</p>
           <h2>Plugins</h2>
           <p className="page-copy">
-            Review the curated ShipKit plugin catalog, see each module’s local
-            capability footprint, and decide which extensions should be active
-            in this desktop workspace.
+            Review the curated plugin catalog and choose which modules stay active.
           </p>
         </div>
       </header>
@@ -66,7 +64,7 @@ export function PluginsPanel() {
         <article className="status-card">
           <span className="status-label">Catalog size</span>
           <strong>{plugins.length}</strong>
-          <p>Curated plugin manifests currently bundled with ShipKit Desktop.</p>
+          <p>Curated plugin manifests bundled with ShipKit Desktop.</p>
         </article>
         <article className="status-card">
           <span className="status-label">Enabled</span>
@@ -76,7 +74,7 @@ export function PluginsPanel() {
         <article className="status-card">
           <span className="status-label">Categories</span>
           <strong>{categories}</strong>
-          <p>Current catalog spread across runtime, diagnostics, and release tasks.</p>
+          <p>Catalog categories available in this workspace.</p>
         </article>
       </div>
 
@@ -95,9 +93,7 @@ export function PluginsPanel() {
 
         <div className="panel-note">
           <p>
-            ShipKit currently treats plugins as curated and signed-only metadata.
-            This keeps the first production slice safe while the signed delivery
-            path and compatibility gates continue to mature.
+            Plugins are curated and signed-only for now to keep the first release safe.
           </p>
         </div>
       </section>

@@ -142,8 +142,7 @@ export function UpdatesPanel() {
           <p className="eyebrow">Release control</p>
           <h2>Updates</h2>
           <p className="page-copy">
-            Check the signed release feed, install a newer build when one is
-            available, and relaunch safely after the update is staged.
+            Check the release feed, install newer builds, and relaunch safely.
           </p>
         </div>
       </header>
@@ -160,7 +159,7 @@ export function UpdatesPanel() {
         <article className="status-card">
           <span className="status-label">Platform</span>
           <strong>{overview?.platform ?? "Loading..."}</strong>
-          <p>Updater validation is currently strongest on the macOS release path.</p>
+          <p>Updater validation is strongest on macOS today.</p>
         </article>
         <article className="status-card">
           <span className="status-label">Default channel</span>
@@ -236,9 +235,7 @@ export function UpdatesPanel() {
 
         <div className="panel-note">
           <p>
-            Live update checks depend on a signed updater feed being embedded in
-            the release build. Local dev and unsigned smoke builds may report a
-            setup error until real release credentials are wired in.
+            Local dev builds may report setup errors until a real signed feed is embedded.
           </p>
         </div>
       </section>
@@ -253,8 +250,7 @@ export function UpdatesPanel() {
 
         {!feedManifest ? (
           <p className="panel-muted">
-            Validate the configured feed endpoint to inspect the embedded manifest
-            before running a live update check.
+            Validate the configured feed to inspect the embedded manifest first.
           </p>
         ) : (
           <div className="field-grid">
@@ -292,7 +288,7 @@ export function UpdatesPanel() {
 
         {!availableUpdate ? (
           <p className="panel-muted">
-            No update details yet. Run a signed feed check to populate this panel.
+            No update details yet. Run a feed check to populate this panel.
           </p>
         ) : (
           <>
@@ -312,7 +308,7 @@ export function UpdatesPanel() {
             <div className="panel-note">
               <p>
                 {availableUpdate.body
-                  ? "Release notes from the signed feed:"
+                  ? "Release notes from the feed:"
                   : "No release notes were attached to this update."}
               </p>
             </div>

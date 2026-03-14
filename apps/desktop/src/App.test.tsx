@@ -153,7 +153,7 @@ describe("App shell", () => {
     render(<App />);
 
     expect(await screen.findByRole("heading", { name: "Home" })).toBeInTheDocument();
-    expect(screen.getByText(/monitor your local runtime/i)).toBeInTheDocument();
+    expect(screen.getByText(/monitor runtime health/i)).toBeInTheDocument();
   });
 
   it("uses desktop preferences when no hash route is provided", async () => {
@@ -206,7 +206,9 @@ describe("App shell", () => {
     expect(await screen.findByText("/tmp/shipkit/support")).toBeInTheDocument();
 
     fireEvent.click(
-      screen.getByRole("button", { name: /export support bundle/i }),
+      within(screen.getByRole("main")).getByRole("button", {
+        name: /^export support bundle$/i,
+      }),
     );
 
     expect(

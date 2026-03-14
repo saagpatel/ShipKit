@@ -44,8 +44,7 @@ export function ThemePanel() {
           <p className="eyebrow">Visual system</p>
           <h2>Theme</h2>
           <p className="page-copy">
-            Switch the active theme, preview the generated CSS variables, and
-            verify that the desktop shell updates with the selected palette.
+            Switch themes and inspect the generated CSS variables.
           </p>
         </div>
       </header>

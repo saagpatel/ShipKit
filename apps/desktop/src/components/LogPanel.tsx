@@ -48,8 +48,7 @@ export function LogPanel() {
           <p className="eyebrow">Runtime visibility</p>
           <h2>Logs</h2>
           <p className="page-copy">
-            Review recent runtime events, filter by level, and confirm whether
-            the desktop app is producing the signals needed for support work.
+            Review recent runtime events and filter by level.
           </p>
         </div>
       </header>

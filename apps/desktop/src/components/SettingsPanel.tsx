@@ -146,8 +146,7 @@ export function SettingsPanel() {
           <p className="eyebrow">Persistence</p>
           <h2>Settings</h2>
           <p className="page-copy">
-            Manage typed desktop preferences for startup and recovery, then use
-            the advanced namespace editor when you need lower-level inspection.
+            Manage desktop preferences, then use the namespace editor for lower-level work.
           </p>
         </div>
       </header>
