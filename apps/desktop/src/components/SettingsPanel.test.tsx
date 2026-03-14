@@ -59,6 +59,16 @@ vi.mock("../lib/invoke", () => ({
   setSetting: vi.fn().mockResolvedValue(undefined),
   loadSettings: vi.fn().mockResolvedValue({}),
   saveSettings: vi.fn().mockResolvedValue(undefined),
+  getDatabaseOverview: vi.fn().mockResolvedValue({
+    total_registered: 1,
+    applied_count: 1,
+    pending_count: 0,
+    last_applied_version: 1,
+    last_applied_name: "create_notes",
+    rollback_available: true,
+    rollback_reason: null,
+    operation_warning: null,
+  }),
   migrationStatus: vi.fn().mockResolvedValue([
     {
       version: 1,

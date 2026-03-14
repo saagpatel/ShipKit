@@ -1,39 +1,46 @@
 # Support Matrix
 
-ShipKit is still in the final production-readiness program. The matrix below
-describes what the repo currently verifies, not what it merely hopes to support
-later.
+ShipKit is currently a macOS-only desktop product.
 
-## Current platform posture
+This file describes the active product target and the generic code-health lanes
+that still run in CI. It does not imply Linux or Windows desktop support.
 
-| Platform | Current status | What CI verifies today | Remaining gap to production |
+## Current product support
+
+| Platform | Product status | What the repo verifies today | Remaining gap |
 | --- | --- | --- | --- |
-| macOS | Primary release target | Rust quality, frontend quality, debug desktop smoke, packaged app smoke, release preflight, updater scaffold, release bundle generation | Real Apple signing, notarization, stapling, and live signed publish |
-| Linux | Build-smoke validation | Rust quality, frontend quality, debug Tauri build smoke, no-bundle package smoke | Signed packaging, runtime package install validation, updater delivery, platform polish |
-| Windows | Build-smoke validation | Debug Tauri build smoke, no-bundle package smoke | Signed installer, runtime install validation, updater delivery, platform polish |
+| macOS | Supported local product target | Rust quality, frontend quality, browser E2E smoke, debug desktop smoke, packaged app smoke, release preflight, updater scaffold, release bundle generation | Real Apple signing, notarization, stapling, and live signed publish |
 
-## What this means operationally
+## Non-product CI lanes
 
-- macOS is the only platform currently on the path to release-candidate quality.
-- Linux and Windows are now part of the repo’s automated build confidence loop,
-  but not yet part of a signed production distribution workflow.
-- Packaged launch validation is currently strongest on macOS because that is
-  where the release path is being hardened first.
+| Platform | Why it still appears in CI | What it does not mean |
+| --- | --- | --- |
+| Ubuntu | Cheap Rust/frontend code-health execution and perf collection | It does not mean ShipKit supports Linux as a desktop product right now |
+
+## Operational meaning
+
+- macOS is the only platform maintainers should use for local ShipKit setup,
+  development, smoke testing, and packaged-app validation.
+- Release credentials are intentionally deferred for the current milestone, so
+  local and packaged validation are the main success paths.
+- Linux and Windows desktop smoke/package expectations are intentionally out of
+  scope for now.
 
 ## Current canonical checks
 
+- `pnpm run doctor:mac`
+  - Confirms this machine matches the local macOS workflow expectations
+- `pnpm run test:e2e`
+  - Browser-hosted operator smoke for the main local workflow
 - `pnpm run smoke:desktop`
-  - Cross-platform debug no-bundle Tauri build smoke
+  - Debug Tauri build smoke on macOS
 - `pnpm run package:smoke`
-  - macOS: packaged `.app` build, launch smoke, restore-from-bundle scenario,
-    staged zip artifact, release manifest generation
-  - Linux/Windows: no-bundle package-path validation with updater overlay config
+  - Packaged `.app` build and launch smoke on macOS
 - `pnpm run verify`
   - Full repo gate used for local verification and CI parity
 
-## Remaining support milestones
+## Next support milestone after this phase
 
-1. Make the signed macOS publish lane real with Apple credentials.
-2. Add runtime install and updater validation for Linux and Windows.
-3. Add platform-specific packaging/signing guidance for Windows and Linux.
-4. Promote Linux and Windows from build-smoke support to full release support.
+1. Finish the local macOS product hardening work.
+2. Resume signed macOS release setup with real credentials.
+3. Reconsider any other platform only after the Mac path is fully settled.

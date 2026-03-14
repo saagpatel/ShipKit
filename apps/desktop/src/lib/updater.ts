@@ -5,6 +5,7 @@ import {
   type Update as NativeUpdate,
 } from "@tauri-apps/plugin-updater";
 import { normalizeCommandError } from "./invoke";
+import { AppCommandError } from "./invoke";
 
 export interface UpdateBuildDefaults {
   channel: string;
@@ -41,6 +42,24 @@ export interface ConfiguredFeedManifest {
   signaturePresent: boolean;
 }
 
+const updaterNotConfiguredMessage = "Updater does not have any endpoints set.";
+
+function normalizeUpdaterError(error: unknown): AppCommandError {
+  const normalized = normalizeCommandError(error);
+  if (
+    normalized.code === "command.unknown" &&
+    normalized.message === updaterNotConfiguredMessage
+  ) {
+    return new AppCommandError({
+      code: "updater.not_configured",
+      message: "Updater feed is not configured for this build.",
+      details: normalized.details ?? normalized.message,
+    });
+  }
+
+  return normalized;
+}
+
 function trimmedEnv(value: string | undefined): string | null {
   const normalized = value?.trim();
   return normalized ? normalized : null;
@@ -51,6 +70,11 @@ function joinUrl(baseUrl: string, path: string): string {
 }
 
 export function getUpdateBuildDefaults(): UpdateBuildDefaults {
+  const bridge = window.__SHIPKIT_E2E_BRIDGE__;
+  if (bridge) {
+    return bridge.getUpdateBuildDefaults();
+  }
+
   const channel = trimmedEnv(import.meta.env.VITE_SHIPKIT_UPDATE_CHANNEL) ?? "canary";
   const host = trimmedEnv(import.meta.env.VITE_SHIPKIT_RELEASE_HOST) ?? "github-releases";
   const repository = trimmedEnv(import.meta.env.VITE_SHIPKIT_RELEASE_REPOSITORY);
@@ -88,19 +112,29 @@ function toSummary(update: NativeUpdate): AvailableUpdateSummary {
 
 export async function checkForUpdates(): Promise<UpdateCheckResult> {
   try {
+    const bridge = window.__SHIPKIT_E2E_BRIDGE__;
+    if (bridge) {
+      return await bridge.checkForUpdates();
+    }
+
     const update = await check();
     return {
       update,
       summary: update ? toSummary(update) : null,
     };
   } catch (error) {
-    throw normalizeCommandError(error);
+    throw normalizeUpdaterError(error);
   }
 }
 
 export async function inspectConfiguredFeed(
   manifestUrl: string | null,
 ): Promise<ConfiguredFeedManifest> {
+  const bridge = window.__SHIPKIT_E2E_BRIDGE__;
+  if (bridge) {
+    return bridge.inspectConfiguredFeed(manifestUrl);
+  }
+
   if (!manifestUrl) {
     throw normalizeCommandError({
       code: "updater.feed_not_configured",
@@ -145,7 +179,7 @@ export async function inspectConfiguredFeed(
         typeof payload.signature === "string" && payload.signature.trim().length > 0,
     };
   } catch (error) {
-    throw normalizeCommandError(error);
+    throw normalizeUpdaterError(error);
   }
 }
 
@@ -190,6 +224,11 @@ export async function downloadAndInstallUpdate(
   update: NativeUpdate,
   onProgress?: (progress: UpdateDownloadProgress) => void,
 ): Promise<void> {
+  const bridge = window.__SHIPKIT_E2E_BRIDGE__;
+  if (bridge) {
+    return bridge.downloadAndInstallUpdate(update, onProgress);
+  }
+
   let snapshot: UpdateDownloadProgress = {
     phase: "idle",
     downloadedBytes: 0,
@@ -209,6 +248,12 @@ export async function downloadAndInstallUpdate(
 
 export async function relaunchAfterUpdate(): Promise<void> {
   try {
+    const bridge = window.__SHIPKIT_E2E_BRIDGE__;
+    if (bridge) {
+      await bridge.relaunchAfterUpdate();
+      return;
+    }
+
     await relaunch();
   } catch (error) {
     throw normalizeCommandError(error);

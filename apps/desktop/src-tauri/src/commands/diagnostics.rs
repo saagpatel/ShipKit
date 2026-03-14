@@ -164,6 +164,11 @@ pub fn export_support_bundle(
         .map_err(|err| CommandError::from_display("support.preferences_failed", err))?;
     let plugins = load_plugin_statuses(&state.settings_store)
         .map_err(|err| CommandError::from_display("support.plugins_failed", err))?;
+    let enabled_plugin_names = plugins
+        .iter()
+        .filter(|plugin| plugin.enabled)
+        .map(|plugin| plugin.name.clone())
+        .collect::<Vec<_>>();
 
     let generated_at = timestamp_string();
     let filename = format!(
@@ -205,6 +210,7 @@ pub fn export_support_bundle(
         log_entry_count: payload["recent_logs"]
             .as_array()
             .map_or(0, |logs| logs.len()),
+        enabled_plugin_names,
     })
 }
 

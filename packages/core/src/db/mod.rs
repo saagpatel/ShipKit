@@ -3,5 +3,5 @@
 pub mod migration;
 pub mod pool;
 
-pub use migration::{Migration, MigrationEngine, MigrationStatus};
+pub use migration::{Migration, MigrationEngine, MigrationOverview, MigrationStatus};
 pub use pool::ConnectionPool;

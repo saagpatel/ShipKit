@@ -78,6 +78,15 @@ describe("updater helpers", () => {
     });
   });
 
+  it("maps missing updater endpoints into a stable not-configured error", async () => {
+    vi.mocked(check).mockRejectedValue("Updater does not have any endpoints set.");
+
+    await expect(checkForUpdates()).rejects.toMatchObject({
+      code: "updater.not_configured",
+      message: "Updater feed is not configured for this build.",
+    });
+  });
+
   it("passes install progress through and relaunches safely", async () => {
     const progressSnapshots: number[] = [];
     const updateHandle = {

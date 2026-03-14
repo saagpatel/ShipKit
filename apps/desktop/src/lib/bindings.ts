@@ -6,6 +6,18 @@ export interface MigrationStatus {
   applied_at: string | null;
 }
 
+// Matches shipkit_core::MigrationOverview
+export interface DatabaseOverview {
+  total_registered: number;
+  applied_count: number;
+  pending_count: number;
+  last_applied_version: number | null;
+  last_applied_name: string | null;
+  rollback_available: boolean;
+  rollback_reason: string | null;
+  operation_warning: string | null;
+}
+
 // Matches shipkit_core::ThemeMode
 export type ThemeMode = "light" | "dark" | "system";
 
@@ -50,6 +62,7 @@ export interface SupportBundleSummary {
   path: string;
   generated_at: string;
   log_entry_count: number;
+  enabled_plugin_names: string[];
 }
 
 export interface SupportBundleArtifact {

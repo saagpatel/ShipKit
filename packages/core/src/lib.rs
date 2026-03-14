@@ -16,7 +16,7 @@ pub mod settings;
 pub mod theme;
 
 // Re-exports for convenience
-pub use db::{ConnectionPool, Migration, MigrationEngine, MigrationStatus};
+pub use db::{ConnectionPool, Migration, MigrationEngine, MigrationOverview, MigrationStatus};
 pub use error::{Result, ShipKitError};
 pub use logger::{Logger, LoggerConfig};
 pub use settings::{Settings, SettingsBackend, SettingsManager, SqliteSettingsStore};

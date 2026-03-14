@@ -3,9 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "bash ./scripts/dev-server.sh",
+    "dev:tauri": "node ./scripts/tauri-dev.mjs",
     "build": "tsc && vite build",
     "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed --project=chromium",
     "test:watch": "vitest",
     "tauri": "tauri",
     "lean:dev": "bash ./scripts/lean-dev.sh",
@@ -22,6 +25,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
+    "@playwright/test": "^1.53.2",
     "@tauri-apps/cli": "^2",
     "@types/react": "^19",
     "@types/react-dom": "^19",

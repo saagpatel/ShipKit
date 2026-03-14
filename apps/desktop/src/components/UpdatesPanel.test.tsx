@@ -178,4 +178,24 @@ describe("UpdatesPanel", () => {
     ).toHaveLength(2);
     expect(screen.getByText("Present")).toBeInTheDocument();
   });
+
+  it("shows an unconfigured build hint when no feed is embedded", async () => {
+    vi.mocked(getUpdateBuildDefaults).mockReturnValue({
+      channel: "local",
+      host: "local-dev",
+      repository: null,
+      manifestUrl: null,
+    });
+
+    render(<UpdatesPanel />);
+
+    expect(await screen.findByText("Not embedded in this build yet")).toBeInTheDocument();
+    expect(
+      await screen.findByText(/this is a local-only macOS build/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /live updates deferred/i }),
+    ).toBeDisabled();
+    expect(screen.getByRole("button", { name: /feed deferred/i })).toBeDisabled();
+  });
 });

@@ -65,6 +65,7 @@ vi.mock("../lib/invoke", () => ({
       path: refreshedArtifact.path,
       generated_at: refreshedArtifact.generated_at,
       log_entry_count: 8,
+      enabled_plugin_names: ["Release Brief", "Runtime Snapshot"],
     });
   }),
   listSupportBundles: vi.fn().mockImplementation(() =>
@@ -118,6 +119,9 @@ describe("DiagnosticsPanel", () => {
     expect(exportSupportBundle).toHaveBeenCalled();
     expect(
       await screen.findByText(/support bundle exported with 8 recent log entries/i),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText(/enabled plugins: release brief, runtime snapshot/i),
     ).toBeInTheDocument();
     expect(await screen.findByText("/tmp/shipkit/support-v2")).toBeInTheDocument();
     expect(
@@ -178,5 +182,22 @@ describe("DiagnosticsPanel", () => {
     expect(updateSpy).toHaveBeenCalledTimes(1);
 
     window.removeEventListener("shipkit:desktop-settings-updated", updateSpy);
+  });
+
+  it("shows a loading-safe refresh state while overview data is being read", async () => {
+    let resolveOverview!: (value: typeof currentOverview) => void;
+    vi.mocked(getAppOverview).mockImplementationOnce(
+      () =>
+        new Promise<typeof currentOverview>((resolve) => {
+          resolveOverview = resolve;
+        }),
+    );
+
+    render(<DiagnosticsPanel />);
+
+    expect(await screen.findByRole("button", { name: /refreshing/i })).toBeDisabled();
+
+    resolveOverview({ ...initialOverview });
+    expect(await screen.findByText("/tmp/shipkit/support")).toBeInTheDocument();
   });
 });

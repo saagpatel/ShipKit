@@ -125,6 +125,7 @@ fn main() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(app_state)
         .invoke_handler(tauri::generate_handler![
+            commands::database::get_database_overview,
             commands::database::migration_status,
             commands::database::apply_migrations,
             commands::database::rollback_migration,

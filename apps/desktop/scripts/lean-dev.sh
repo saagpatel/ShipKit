@@ -33,4 +33,4 @@ echo "vite cache dir: $LEAN_VITE_CACHE"
 cd "$APP_DIR"
 CARGO_TARGET_DIR="$LEAN_CARGO_TARGET" \
 VITE_CACHE_DIR="$LEAN_VITE_CACHE" \
-pnpm tauri dev "$@"
+pnpm dev:tauri "$@"

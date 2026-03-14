@@ -43,7 +43,7 @@ jobs:
           version: 10.28.1
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: 20
+          node-version: 22
       - run: pnpm install --frozen-lockfile
       - run: pnpm run typecheck
       - run: pnpm run test:frontend
@@ -61,8 +61,10 @@ jobs:
           version: 10.28.1
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: 20
+          node-version: 22
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir apps/desktop exec playwright install chromium
+      - run: pnpm run test:e2e
       - run: pnpm run smoke:desktop
       - run: pnpm run package:smoke
       - run: pnpm run release:preflight
@@ -76,39 +78,3 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
           retention-days: 14
-
-  desktop-build-matrix:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
-        with:
-          version: 10.28.1
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: 20
-      - name: Install Linux Tauri system dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libglib2.0-dev \
-            libgdk-pixbuf-2.0-dev \
-            libsoup-3.0-dev \
-            javascriptcoregtk-4.1-dev \
-            libwebkit2gtk-4.1-dev \
-            librsvg2-dev \
-            patchelf \
-            libgtk-3-dev \
-            libayatana-appindicator3-dev \
-            libxdo-dev
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run smoke:desktop
-      - run: pnpm run package:smoke

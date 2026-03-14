@@ -37,6 +37,7 @@ export function UpdatesPanel() {
   const [isReadyToRestart, setIsReadyToRestart] = useState(false);
 
   const buildDefaults = useMemo(() => getUpdateBuildDefaults(), []);
+  const isLocalOnlyBuild = !buildDefaults.manifestUrl;
 
   useEffect(() => {
     getAppOverview()
@@ -142,14 +143,22 @@ export function UpdatesPanel() {
           <p className="eyebrow">Release control</p>
           <h2>Updates</h2>
           <p className="page-copy">
-            Check the signed release feed, install a newer build when one is
-            available, and relaunch safely after the update is staged.
+            {isLocalOnlyBuild
+              ? "Review the local-only update posture and confirm this build is intentionally running without an embedded feed."
+              : "Check the release feed, install newer builds, and relaunch safely."}
           </p>
         </div>
       </header>
 
       {error ? <p className="callout callout-error">{error}</p> : null}
       {status ? <p className="callout callout-success">{status}</p> : null}
+      {isLocalOnlyBuild ? (
+        <p className="callout callout-info">
+          This is a local-only macOS build. Updater credentials and signed feed
+          embedding are intentionally deferred, so feed validation and live
+          update checks stay disabled here.
+        </p>
+      ) : null}
 
       <div className="status-grid">
         <article className="status-card">
@@ -160,7 +169,7 @@ export function UpdatesPanel() {
         <article className="status-card">
           <span className="status-label">Platform</span>
           <strong>{overview?.platform ?? "Loading..."}</strong>
-          <p>Updater validation is currently strongest on the macOS release path.</p>
+          <p>Updater validation is strongest on macOS today.</p>
         </article>
         <article className="status-card">
           <span className="status-label">Default channel</span>
@@ -177,28 +186,40 @@ export function UpdatesPanel() {
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Signed feed</p>
-            <h3>Check for a newer release</h3>
+            <h3>
+              {isLocalOnlyBuild
+                ? "Review local update posture"
+                : "Check for a newer release"}
+            </h3>
           </div>
           <div className="panel-actions">
             <button
               className="panel-button"
-              disabled={isInspectingFeed}
+              disabled={isInspectingFeed || isLocalOnlyBuild}
               onClick={handleInspectFeed}
               type="button"
             >
-              {isInspectingFeed ? "Validating Feed..." : "Validate Feed Endpoint"}
+              {isLocalOnlyBuild
+                ? "Feed Deferred"
+                : isInspectingFeed
+                  ? "Validating Feed..."
+                  : "Validate Feed Endpoint"}
             </button>
             <button
               className="panel-button"
-              disabled={isChecking}
+              disabled={isChecking || isLocalOnlyBuild}
               onClick={handleCheck}
               type="button"
             >
-              {isChecking ? "Checking..." : "Check for Updates"}
+              {isLocalOnlyBuild
+                ? "Live Updates Deferred"
+                : isChecking
+                  ? "Checking..."
+                  : "Check for Updates"}
             </button>
             <button
               className="panel-button is-active"
-              disabled={!availableUpdate || isInstalling}
+              disabled={!availableUpdate || isInstalling || isLocalOnlyBuild}
               onClick={handleInstall}
               type="button"
             >
@@ -236,9 +257,9 @@ export function UpdatesPanel() {
 
         <div className="panel-note">
           <p>
-            Live update checks depend on a signed updater feed being embedded in
-            the release build. Local dev and unsigned smoke builds may report a
-            setup error until real release credentials are wired in.
+            {isLocalOnlyBuild
+              ? "Use this workspace to confirm the local-only posture and review where the signed feed will appear later."
+              : "This build has an embedded feed target, so validation and live checks are available."}
           </p>
         </div>
       </section>
@@ -251,10 +272,14 @@ export function UpdatesPanel() {
           </div>
         </div>
 
-        {!feedManifest ? (
+        {isLocalOnlyBuild ? (
           <p className="panel-muted">
-            Validate the configured feed endpoint to inspect the embedded manifest
-            before running a live update check.
+            No updater feed is embedded in this local-only build yet. This is
+            expected until release credentials are intentionally enabled.
+          </p>
+        ) : !feedManifest ? (
+          <p className="panel-muted">
+            Validate the configured feed to inspect the embedded manifest first.
           </p>
         ) : (
           <div className="field-grid">
@@ -290,9 +315,13 @@ export function UpdatesPanel() {
           </div>
         </div>
 
-        {!availableUpdate ? (
+        {isLocalOnlyBuild ? (
           <p className="panel-muted">
-            No update details yet. Run a signed feed check to populate this panel.
+            Live update details are intentionally unavailable in local-only mode.
+          </p>
+        ) : !availableUpdate ? (
+          <p className="panel-muted">
+            No update details yet. Run a feed check to populate this panel.
           </p>
         ) : (
           <>
@@ -312,7 +341,7 @@ export function UpdatesPanel() {
             <div className="panel-note">
               <p>
                 {availableUpdate.body
-                  ? "Release notes from the signed feed:"
+                  ? "Release notes from the feed:"
                   : "No release notes were attached to this update."}
               </p>
             </div>

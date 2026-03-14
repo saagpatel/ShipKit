@@ -25,6 +25,19 @@ pub struct MigrationStatus {
     pub applied_at: Option<String>,
 }
 
+/// Summary of the currently registered migration workspace.
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct MigrationOverview {
+    pub total_registered: usize,
+    pub applied_count: usize,
+    pub pending_count: usize,
+    pub last_applied_version: Option<i64>,
+    pub last_applied_name: Option<String>,
+    pub rollback_available: bool,
+    pub rollback_reason: Option<String>,
+    pub operation_warning: Option<String>,
+}
+
 /// Manages schema migrations with ordering, checksums, and rollback.
 pub struct MigrationEngine {
     pool: ConnectionPool,
@@ -210,6 +223,53 @@ impl MigrationEngine {
                 applied_at: applied.get(&m.version).cloned(),
             })
             .collect())
+    }
+
+    /// Summarize the migration workspace for operator-facing dashboards.
+    pub fn status_overview(&self) -> Result<MigrationOverview> {
+        let statuses = self.status()?;
+        let total_registered = statuses.len();
+        let applied: Vec<_> = statuses.iter().filter(|status| status.applied).collect();
+        let applied_count = applied.len();
+        let pending_count = total_registered.saturating_sub(applied_count);
+        let last_applied = applied.iter().max_by_key(|status| status.version);
+        let rollback_reason = if let Some(last_applied) = last_applied {
+            let migration = self
+                .migrations
+                .iter()
+                .find(|migration| migration.version == last_applied.version);
+
+            match migration {
+                Some(migration) if migration.down_sql.is_some() => None,
+                Some(migration) => Some(format!(
+                    "{} cannot be rolled back because no down SQL is registered.",
+                    migration.name
+                )),
+                None => Some(format!(
+                    "Migration {} is applied locally but no longer registered in ShipKit.",
+                    last_applied.version
+                )),
+            }
+        } else {
+            Some("No applied migrations are available to roll back.".into())
+        };
+
+        Ok(MigrationOverview {
+            total_registered,
+            applied_count,
+            pending_count,
+            last_applied_version: last_applied.map(|status| status.version),
+            last_applied_name: last_applied.map(|status| status.name.clone()),
+            rollback_available: rollback_reason.is_none(),
+            rollback_reason,
+            operation_warning: if pending_count > 0 {
+                Some(format!(
+                    "{pending_count} migration(s) still need to be applied in this workspace."
+                ))
+            } else {
+                None
+            },
+        })
     }
 
     fn ensure_tracking_table(&self) -> Result<()> {
@@ -462,6 +522,41 @@ mod tests {
         assert_eq!(
             engine.migrations[0].down_sql.as_deref(),
             Some("DROP TABLE users;")
+        );
+    }
+
+    #[test]
+    fn status_overview_reports_pending_and_rollback_state() {
+        let pool = ConnectionPool::in_memory().expect("pool");
+        let mut engine = MigrationEngine::new(pool);
+        engine.register(Migration {
+            version: 1,
+            name: "create_users".into(),
+            up_sql: "CREATE TABLE users (id INTEGER PRIMARY KEY);".into(),
+            down_sql: Some("DROP TABLE users;".into()),
+        });
+        engine.register(Migration {
+            version: 2,
+            name: "add_profiles".into(),
+            up_sql: "CREATE TABLE profiles (id INTEGER PRIMARY KEY);".into(),
+            down_sql: None,
+        });
+
+        engine.apply_pending().expect("apply");
+        engine.rollback_last().expect_err("latest migration has no down sql");
+
+        let overview = engine.status_overview().expect("overview");
+        assert_eq!(overview.total_registered, 2);
+        assert_eq!(overview.applied_count, 2);
+        assert_eq!(overview.pending_count, 0);
+        assert_eq!(overview.last_applied_version, Some(2));
+        assert_eq!(overview.last_applied_name.as_deref(), Some("add_profiles"));
+        assert!(!overview.rollback_available);
+        assert!(
+            overview
+                .rollback_reason
+                .as_deref()
+                .is_some_and(|reason| reason.contains("no down SQL"))
         );
     }
 }
