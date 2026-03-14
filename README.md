@@ -52,7 +52,7 @@ ShipKit/
 ### Prerequisites
 
 - Rust 1.84+ (edition 2024)
-- Node.js 18+ with pnpm
+- Node.js 22 LTS with pnpm
 - macOS as the primary release target
 - Linux and Windows for CI build-smoke validation during the completion program
 
@@ -63,8 +63,7 @@ ShipKit/
 pnpm install
 
 # Run in normal dev mode (faster warm rebuilds, more disk usage)
-cd apps/desktop
-pnpm tauri dev
+pnpm run dev:desktop
 ```
 
 ### Lean Dev Mode (Low Disk)
@@ -74,7 +73,8 @@ cd apps/desktop
 pnpm lean:dev
 ```
 
-`pnpm lean:dev` still starts the app with `pnpm tauri dev`, but redirects heavy build caches to a temporary directory and cleans heavy artifacts automatically when the process exits.
+`pnpm lean:dev` still starts the app with `pnpm dev:tauri`, but redirects heavy build caches to a temporary directory and cleans heavy artifacts automatically when the process exits.
+`pnpm run dev:desktop` picks the first open local port starting at `1420`, so another repo already using `1420` does not block ShipKit from starting.
 
 Tradeoff:
 - Normal dev keeps build outputs in the repo (`target`, Vite cache) for faster rebuilds.
@@ -96,7 +96,7 @@ pnpm clean:full
 
 ```toml
 [dependencies]
-shipkit-core = { git = "https://github.com/YOUR_USERNAME/ShipKit" }
+shipkit-core = { git = "https://github.com/saagar210/ShipKit" }
 ```
 
 ```rust

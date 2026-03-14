@@ -178,4 +178,17 @@ describe("UpdatesPanel", () => {
     ).toHaveLength(2);
     expect(screen.getByText("Present")).toBeInTheDocument();
   });
+
+  it("shows an unconfigured build hint when no feed is embedded", async () => {
+    vi.mocked(getUpdateBuildDefaults).mockReturnValue({
+      channel: "canary",
+      host: "github-releases",
+      repository: null,
+      manifestUrl: null,
+    });
+
+    render(<UpdatesPanel />);
+
+    expect(await screen.findByText("Not embedded in this build yet")).toBeInTheDocument();
+  });
 });

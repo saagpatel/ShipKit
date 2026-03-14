@@ -23,11 +23,24 @@
 - If lockfile changed, include lockfile rationale in PR body.
 - Required checks before done-state:
   - git hygiene
-  - bundle delta
-  - build delta
-  - performance budgets (profile-dependent)
-  - assets/memory checks
+  - `pnpm run policy:changes`
+  - `pnpm run contracts:check`
+  - `pnpm run typecheck`
+  - `pnpm run lint`
+  - `pnpm run test`
+  - `pnpm run build`
+  - `pnpm run smoke:desktop`
+  - `pnpm run package:smoke`
+  - `pnpm run release:preflight`
+  - `pnpm run updater:scaffold`
+  - `pnpm run release:bundle`
+  - `pnpm run release:validate-feed`
+  - `pnpm run perf:build`
+  - `pnpm run perf:bundle`
+  - `pnpm run perf:memory`
+  - `pnpm run perf:assets`
 - Required gates block completion when `fail` or `not-run`.
+- Performance budget enforcement is currently applied by the `perf-enforced` workflow when the production profile is enabled.
 
 ## Definition of Done: Tests + Docs (Blocking)
 
@@ -38,9 +51,9 @@
 - Trivial assertions are forbidden (`expect(true).toBe(true)`, snapshot-only without semantic assertions, render-only smoke tests without behavior checks).
 - Mock only external boundaries (network, clock, randomness, third-party SDKs). Do not mock the unit under test.
 - UI changes must cover state matrix: loading, empty, error, success, disabled, focus-visible.
-- API/command surface changes must update generated contract artifacts and request/response examples.
+- API/command surface changes must update the checked frontend/backend contract surface (`pnpm run contracts:check`) and any request/response examples.
 - Architecture-impacting changes must include an ADR in `/docs/adr/`.
-- Required checks are blocking when `fail` or `not-run`: lint, typecheck, tests, coverage, diff coverage, docs check.
+- Required checks are blocking when `fail` or `not-run`: `pnpm run policy:changes`, `pnpm run contracts:check`, lint, typecheck, tests, build, smoke, package smoke, release preflight/bundle validation, and the perf collection commands in `.codex/verify.commands`.
 - Reviewer -> fixer -> reviewer loop is required before merge.
 
 ## Verification Contract

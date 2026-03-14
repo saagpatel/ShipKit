@@ -14,9 +14,33 @@ const changed = execSync(`git diff --name-only ${baseRef}...HEAD`, { encoding: '
   .map((line) => line.trim())
   .filter(Boolean);
 
-const isProdCode = (file) => /^(src|app|server|api|lib)\//.test(file) && !/\.(test|spec)\.[cm]?[jt]sx?$/.test(file);
-const isTest = (file) => /^tests\//.test(file) || /\.(test|spec)\.[cm]?[jt]sx?$/.test(file);
-const isDoc = (file) => /^docs\//.test(file) || /^openapi\//.test(file) || file === 'README.md';
+const prodMatchers = [
+  /^(src|app|server|api|lib)\//,
+  /^apps\/[^/]+\/src\//,
+  /^apps\/[^/]+\/src-tauri\/src\//,
+  /^packages\/[^/]+\/src\//,
+];
+
+const testMatchers = [
+  /^tests\//,
+  /^apps\/[^/]+\/src\/.*\.(test|spec)\.[cm]?[jt]sx?$/,
+  /^apps\/[^/]+\/src-tauri\/.*test.*\.rs$/,
+  /^packages\/[^/]+\/.*test.*\.rs$/,
+  /\.(test|spec)\.[cm]?[jt]sx?$/,
+];
+
+const docMatchers = [
+  /^docs\//,
+  /^openapi\//,
+  /^README\.md$/,
+  /^AGENTS\.md$/,
+];
+
+const isProdCode = (file) =>
+  prodMatchers.some((pattern) => pattern.test(file)) &&
+  !/\.(test|spec)\.[cm]?[jt]sx?$/.test(file);
+const isTest = (file) => testMatchers.some((pattern) => pattern.test(file));
+const isDoc = (file) => docMatchers.some((pattern) => pattern.test(file));
 
 const prodChanged = changed.some(isProdCode);
 const testsChanged = changed.some(isTest);

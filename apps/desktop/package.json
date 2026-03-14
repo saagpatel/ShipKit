@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "bash ./scripts/dev-server.sh",
+    "dev:tauri": "node ./scripts/tauri-dev.mjs",
     "build": "tsc && vite build",
     "test": "vitest run",
     "test:watch": "vitest",

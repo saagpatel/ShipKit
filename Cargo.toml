@@ -6,7 +6,7 @@ members = ["packages/core", "packages/macros", "apps/desktop/src-tauri"]
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
-repository = "https://github.com/anthropics/shipkit"
+repository = "https://github.com/saagar210/ShipKit"
 description = "Production-ready building blocks for Tauri 2 desktop applications"
 
 [workspace.lints.clippy]

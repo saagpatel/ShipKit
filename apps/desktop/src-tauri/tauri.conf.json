@@ -7,6 +7,12 @@
     "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
   },
+  "plugins": {
+    "updater": {
+      "endpoints": [],
+      "pubkey": ""
+    }
+  },
   "app": {
     "withGlobalTauri": true,
     "windows": [

@@ -5,6 +5,7 @@ import {
   type Update as NativeUpdate,
 } from "@tauri-apps/plugin-updater";
 import { normalizeCommandError } from "./invoke";
+import { AppCommandError } from "./invoke";
 
 export interface UpdateBuildDefaults {
   channel: string;
@@ -39,6 +40,24 @@ export interface ConfiguredFeedManifest {
   notes: string | null;
   artifactUrl: string | null;
   signaturePresent: boolean;
+}
+
+const updaterNotConfiguredMessage = "Updater does not have any endpoints set.";
+
+function normalizeUpdaterError(error: unknown): AppCommandError {
+  const normalized = normalizeCommandError(error);
+  if (
+    normalized.code === "command.unknown" &&
+    normalized.message === updaterNotConfiguredMessage
+  ) {
+    return new AppCommandError({
+      code: "updater.not_configured",
+      message: "Updater feed is not configured for this build.",
+      details: normalized.details ?? normalized.message,
+    });
+  }
+
+  return normalized;
 }
 
 function trimmedEnv(value: string | undefined): string | null {
@@ -94,7 +113,7 @@ export async function checkForUpdates(): Promise<UpdateCheckResult> {
       summary: update ? toSummary(update) : null,
     };
   } catch (error) {
-    throw normalizeCommandError(error);
+    throw normalizeUpdaterError(error);
   }
 }
 
@@ -145,7 +164,7 @@ export async function inspectConfiguredFeed(
         typeof payload.signature === "string" && payload.signature.trim().length > 0,
     };
   } catch (error) {
-    throw normalizeCommandError(error);
+    throw normalizeUpdaterError(error);
   }
 }
 

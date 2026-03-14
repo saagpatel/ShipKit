@@ -1,11 +1,17 @@
 {
   "name": "shipkit",
   "private": true,
+  "engines": {
+    "node": ">=22 <23",
+    "pnpm": ">=10 <11"
+  },
   "scripts": {
     "build": "pnpm run build:desktop && pnpm run build:rust",
     "build:desktop": "pnpm --dir apps/desktop build",
     "build:rust": "cargo build --workspace",
-    "dev:desktop": "pnpm --dir apps/desktop tauri dev",
+    "dev:desktop": "pnpm --dir apps/desktop dev:tauri",
+    "contracts:check": "node scripts/contracts/check-desktop-bindings.mjs",
+    "policy:changes": "node scripts/ci/require-tests-and-docs.mjs",
     "typecheck": "pnpm --dir apps/desktop exec tsc --noEmit",
     "lint": "cargo clippy --workspace -- -D warnings",
     "test": "pnpm run test:frontend && pnpm run test:rust",
