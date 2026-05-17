@@ -23,16 +23,16 @@
     "react-dom": "^19"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.2.0",
     "@playwright/test": "^1.53.2",
     "@tauri-apps/cli": "^2",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4",
     "jsdom": "^26.0.0",
     "typescript": "^5",
-    "vite": "^6",
+    "vite": "^6.4.2",
     "vitest": "^3.1.1"
   }
 }
