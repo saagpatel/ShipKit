@@ -16,23 +16,23 @@
     "clean:full": "bash ./scripts/clean-full.sh"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2",
-    "@tauri-apps/plugin-process": "^2",
-    "@tauri-apps/plugin-updater": "^2",
+    "@tauri-apps/api": "^2.11.0",
+    "@tauri-apps/plugin-process": "^2.3.1",
+    "@tauri-apps/plugin-updater": "^2.10.1",
     "react": "^19",
     "react-dom": "^19"
   },
   "devDependencies": {
+    "@playwright/test": "^1.53.2",
+    "@tauri-apps/cli": "^2.11.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
-    "@playwright/test": "^1.53.2",
-    "@tauri-apps/cli": "^2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4",
     "jsdom": "^26.0.0",
     "typescript": "^5",
-    "vite": "^6",
+    "vite": "^6.4.2",
     "vitest": "^3.1.1"
   }
 }
