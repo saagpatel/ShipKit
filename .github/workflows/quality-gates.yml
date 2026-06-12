@@ -17,7 +17,7 @@ jobs:
         with:
           version: 10.28.1
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6.4.0
         with:
           node-version: 22
 
