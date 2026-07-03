@@ -298,7 +298,11 @@ impl MigrationEngine {
     fn checksum(sql: &str) -> String {
         let mut hasher = Sha256::new();
         hasher.update(sql.as_bytes());
-        format!("{:x}", hasher.finalize())
+        hasher
+            .finalize()
+            .iter()
+            .map(|byte| format!("{byte:02x}"))
+            .collect()
     }
 }
 
