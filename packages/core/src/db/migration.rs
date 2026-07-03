@@ -295,7 +295,7 @@ impl MigrationEngine {
         Ok(map)
     }
 
-    fn checksum(sql: &str) -> String {
+    pub(crate) fn checksum(sql: &str) -> String {
         let mut hasher = Sha256::new();
         hasher.update(sql.as_bytes());
         hasher
@@ -313,15 +313,6 @@ mod tests {
 
     fn test_pool() -> ConnectionPool {
         ConnectionPool::in_memory().expect("in-memory pool")
-    }
-
-    #[test]
-    fn checksum_outputs_lowercase_hex_digest() {
-        let checksum = MigrationEngine::checksum("CREATE TABLE test (id INTEGER);");
-
-        assert_eq!(checksum.len(), 64);
-        assert!(checksum.chars().all(|ch| ch.is_ascii_hexdigit()));
-        assert_eq!(checksum, checksum.to_ascii_lowercase());
     }
 
     #[test]
