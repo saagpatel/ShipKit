@@ -28,12 +28,12 @@ jobs:
     env:
       SHIPKIT_RELEASE_CHANNEL: ${{ inputs.from_channel }}
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       - uses: dtolnay/rust-toolchain@stable
       - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
         with:
           version: 10.28.1
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: 22
           cache: pnpm
@@ -44,7 +44,7 @@ jobs:
       - run: pnpm run release:bundle
       - run: pnpm run release:validate-feed
       - run: pnpm run release:promote -- --from ${{ inputs.from_channel }} --to ${{ inputs.to_channel }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: shipkit-release-foundation-${{ inputs.from_channel }}-to-${{ inputs.to_channel }}
           path: .release-results

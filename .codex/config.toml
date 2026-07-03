@@ -1,9 +1,5 @@
-model = "gpt-5.4"
-web_search = "cached"
-sandbox_mode = "workspace-write"
-approval_policy = "on-request"
-personality = "pragmatic"
-plan_mode_reasoning_effort = "high"
+# Runtime model, approval, sandbox, web search, personality, and reasoning
+# settings inherit from ~/.codex/config.toml or an explicit --profile layer.
 
 [agents]
 max_threads = 4
