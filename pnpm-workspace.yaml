@@ -1,3 +1,7 @@
 packages:
   - "packages/*"
   - "apps/*"
+overrides:
+  "@babel/core": ^7.29.6
+  picomatch: 4.0.4
+  ws: ^8.21.0
