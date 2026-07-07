@@ -221,11 +221,12 @@ describe("App shell", () => {
     render(<App />);
 
     const navigation = screen.getByRole("navigation", { name: /primary/i });
-    const diagnosticsNavButton = within(navigation).getByRole("button", {
-      name: /^diagnostics\b/i,
-    });
+    const diagnosticsNavButton = within(navigation)
+      .getByText("Diagnostics")
+      .closest("button");
 
-    fireEvent.click(diagnosticsNavButton);
+    expect(diagnosticsNavButton).not.toBeNull();
+    fireEvent.click(diagnosticsNavButton!);
 
     expect(
       await screen.findByRole("heading", { name: "Diagnostics" }),
@@ -253,11 +254,12 @@ describe("App shell", () => {
     render(<App />);
 
     const navigation = screen.getByRole("navigation", { name: /primary/i });
-    const diagnosticsNavButton = within(navigation).getByRole("button", {
-      name: /^diagnostics\b/i,
-    });
+    const diagnosticsNavButton = within(navigation)
+      .getByText("Diagnostics")
+      .closest("button");
 
-    fireEvent.click(diagnosticsNavButton);
+    expect(diagnosticsNavButton).not.toBeNull();
+    fireEvent.click(diagnosticsNavButton!);
 
     expect(
       await screen.findByText("Overview unavailable (support.overview_failed)"),
