@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",
-    "@tauri-apps/cli": "^2.11.3",
+    "@tauri-apps/cli": "^2.11.4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@types/react": "^19",
@@ -33,6 +33,6 @@
     "jsdom": "^26.0.0",
     "typescript": "^5",
     "vite": "^6.4.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   }
 }
