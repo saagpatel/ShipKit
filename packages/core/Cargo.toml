@@ -24,7 +24,7 @@ tauri = { version = "2", optional = true }
 
 [dev-dependencies]
 tempfile = "3"
-serial_test = "3"
+serial_test = "4"
 
 [features]
 default = []
