@@ -77,6 +77,9 @@ declare global {
 // TS 7 enforces TS2882 on side-effect imports; declare CSS as an ambient
 // module so `import "./styles.css"` type-checks (vite/client's reference
 // above is inert here because it follows the import statements).
-declare module "*.css";
+declare module "*.css" {
+  const content: string;
+  export default content;
+}
 
 export {};
