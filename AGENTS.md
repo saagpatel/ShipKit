@@ -21,6 +21,7 @@
   - `pnpm run typecheck`
   - `pnpm run lint`
   - `pnpm run test`
+  - `pnpm run test:e2e`
   - `pnpm run build`
   - `pnpm run smoke:desktop`
   - `pnpm run package:smoke`
