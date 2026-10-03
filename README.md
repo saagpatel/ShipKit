@@ -45,10 +45,15 @@ cargo build -p shipkit-core
 ## Verification
 
 Run commands from the repository root. For focused coverage, use
-`pnpm run test:frontend` or `cargo test -p shipkit-core`; the broader unit suite
+`pnpm run test:frontend` or `cargo test --locked -p shipkit-core`; the broader unit suite
 is `pnpm run test`. TypeScript and Rust checks are `pnpm run typecheck` and
 `pnpm run lint` (Clippy). `pnpm run build` builds the frontend and Rust workspace.
 No separate format command is configured.
+
+The workspace `Cargo.lock` is committed to pin the desktop application and core
+verification dependency graph. Keep Cargo manifests unchanged when refreshing
+setup; use `--locked` for reproducible Rust checks. Intentional dependency
+updates should review the manifest and lockfile together.
 
 The complete gate is `pnpm run verify`, defined by
 [`.codex/verify.commands`](.codex/verify.commands) and required by

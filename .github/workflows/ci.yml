@@ -29,8 +29,8 @@ jobs:
             librsvg2-dev \
             libxdo-dev \
             patchelf
-      - run: cargo test --workspace
-      - run: cargo clippy --workspace -- -D warnings
+      - run: cargo test --locked --workspace
+      - run: cargo clippy --locked --workspace -- -D warnings
 
   frontend-quality:
     runs-on: ubuntu-latest
