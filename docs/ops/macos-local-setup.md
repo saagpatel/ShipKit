@@ -14,8 +14,8 @@ ShipKit currently supports a macOS-only local development and smoke workflow.
 ## First-time setup
 
 ```bash
-pnpm run doctor:mac
 pnpm install --frozen-lockfile
+pnpm run doctor:mac
 pnpm --dir apps/desktop exec playwright install chromium
 ```
 
