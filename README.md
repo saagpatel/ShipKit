@@ -17,25 +17,54 @@ ShipKit is a Rust workspace providing production-ready shared modules for Tauri 
 ## Quick Start
 
 ### Prerequisites
-- Rust stable
-- Node.js 18+ and pnpm
-- Tauri CLI v2 (`cargo install tauri-cli --version "^2"`)
+- macOS with Xcode Command Line Tools
+- Rust stable with `cargo`
+- Node.js 22 and pnpm 10 (see root `package.json` engines)
+- Repo-local Tauri CLI, installed with the frozen JavaScript dependencies
+
+Follow [macOS local setup](docs/ops/macos-local-setup.md) for prerequisites and
+Playwright Chromium installation. Ubuntu CI checks code health; it does not
+establish Linux desktop support.
 
 ### Installation
 ```bash
 git clone https://github.com/saagpatel/ShipKit.git
 cd ShipKit
-pnpm install
+pnpm install --frozen-lockfile
 ```
 
 ### Usage
 ```bash
 # Run the desktop app
-pnpm tauri dev
+pnpm run dev:desktop
 
 # Build the core library only
 cargo build -p shipkit-core
 ```
+
+## Verification
+
+Run commands from the repository root. For focused coverage, use
+`pnpm run test:frontend` or `cargo test -p shipkit-core`; the broader unit suite
+is `pnpm run test`. TypeScript and Rust checks are `pnpm run typecheck` and
+`pnpm run lint` (Clippy). `pnpm run build` builds the frontend and Rust workspace.
+No separate format command is configured.
+
+The complete gate is `pnpm run verify`, defined by
+[`.codex/verify.commands`](.codex/verify.commands) and required by
+[AGENTS.md](AGENTS.md). Keep its policy, contract, browser E2E, desktop/package,
+release-scaffold and performance checks. Focused checks do not replace it.
+Use the [local smoke runbook](docs/ops/local-smoke-runbook.md) for the expected
+operator journey, especially after UI or IPC behavior changes. Browser E2E
+uses a localhost server on port 4173; if occupied, preserve the existing
+listener and resolve the port conflict before running the canonical command.
+
+Desktop/package smoke requires macOS. Package smoke builds and launches an
+unsigned app with isolated smoke data; signing preflight warnings, a generated
+local feed, and passing tests do not prove signing, notarization or a live
+updater. See the existing [support matrix](docs/release/support-matrix.md) and
+[signing/updater guide](docs/release/signing-and-updater.md). Release freeze and
+publication decisions remain as documented there.
 
 ## Tech Stack
 
