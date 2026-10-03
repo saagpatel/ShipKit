@@ -1,6 +1,6 @@
 # Signing and Updater Scaffolding
 
-ShipKit now has a report-first release scaffold for macOS packaging. It does not sign or notarize artifacts yet, but it does make the expected environment and generated metadata explicit.
+ShipKit now has a report-first release scaffold for macOS packaging. It can sign updater artifacts when keys are available, but it does not Apple-sign or notarize the packaged app yet. It makes the expected environment and generated metadata explicit.
 
 ## Commands
 
@@ -23,7 +23,7 @@ ShipKit now has a report-first release scaffold for macOS packaging. It does not
   - Unsigned local/dev builds may return setup errors until the real feed and public key are embedded
 - `pnpm run release:bundle`
   - Creates `.release-results/publish/<channel>/<version>/<platform>/`
-  - Stages artifact, signature, release metadata, release notes, and provenance for publication
+  - Stages artifact, signature when available, release metadata, release notes, and provenance for publication
 - `pnpm run release:validate-feed`
   - Starts a temporary local static server against the generated release bundle
   - Validates a locally served updater manifest and artifact download before live publication
@@ -45,7 +45,7 @@ ShipKit now has a report-first release scaffold for macOS packaging. It does not
   - Rebuilds the packaged artifact, regenerates release metadata, validates the local hosted feed, runs preflight, promotes the selected channel, and uploads the resulting `.release-results/`.
 - `.github/workflows/release-publish.yml`
   - Strict manual workflow for signed updater metadata and GitHub Releases publication.
-  - Requires real signing/notarization and updater credentials to pass preflight.
+  - Requires signing/notarization environment values and updater credentials to pass preflight; preflight checks presence, not credential validity. Packaging still uses `--no-sign` and does not run notarization.
   - Also validates the generated bundle through the local hosted-feed check before publishing.
 
 ## Expected signing environment
@@ -94,7 +94,7 @@ ShipKit now has a report-first release scaffold for macOS packaging. It does not
 - `VITE_SHIPKIT_RELEASE_REPOSITORY`
   - Optional frontend hint for the GitHub Releases repository shown in the desktop `Updates` workspace
 - `VITE_SHIPKIT_RELEASE_ARTIFACT_BASE_URL`
-  - Optional frontend hint for a custom hosted latest-manifest URL shown in the desktop `Updates` workspace
+  - Optional frontend hint for a custom hosting base URL; the desktop `Updates` workspace appends `/latest.json`
 - `VITE_SHIPKIT_TAURI_UPDATER_ENDPOINT`
   - Optional frontend hint for the exact embedded updater endpoint shown in the desktop `Updates` workspace
 - `SHIPKIT_UPDATER_PRIVATE_KEY` or `TAURI_SIGNING_PRIVATE_KEY`

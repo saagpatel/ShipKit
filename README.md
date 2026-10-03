@@ -4,7 +4,7 @@
 
 > The Tauri foundations every desktop app needs — migrations, settings, theming, logging — already built.
 
-ShipKit is a Rust workspace providing production-ready shared modules for Tauri 2 desktop applications. Stop rebuilding database migration engines, settings stores, and theme systems from scratch — `shipkit-core` gives you type-safe, SQLite-backed implementations with a working Tauri 2 desktop shell demonstrating all 25 IPC commands.
+ShipKit is a Rust workspace providing production-ready shared modules for Tauri 2 desktop applications. Stop rebuilding database migration engines, settings stores, and theme systems from scratch — `shipkit-core` gives you type-safe, SQLite-backed implementations with a working Tauri 2 desktop shell exposing 26 IPC commands.
 
 ## Features
 
@@ -12,7 +12,7 @@ ShipKit is a Rust workspace providing production-ready shared modules for Tauri 
 - **Settings module** — type-safe settings with `#[derive(Settings)]` macro, SQLite backend, namespace isolation
 - **Theme module** — CSS variable themes with light/dark defaults, macOS system theme detection, runtime switching
 - **Logger module** — structured JSON logging via tracing, file rotation (daily/hourly/never), level filtering
-- **25 IPC commands** — complete Tauri 2 integration exposing the full core API to TypeScript
+- **26 IPC commands** — Tauri 2 integration exposing database, settings, theme, logging, diagnostics and plugin operations to TypeScript
 
 ## Quick Start
 
@@ -72,7 +72,7 @@ publication decisions remain as documented there.
 |-------|------------|
 | Language | Rust (workspace) |
 | Desktop runtime | Tauri 2 |
-| Storage | SQLite (SQLx, WAL mode) |
+| Storage | SQLite (rusqlite + r2d2, WAL mode) |
 | Logging | tracing + tracing-appender |
 | Macros | proc-macro crate (shipkit-macros) |
 | Frontend | React 19 + TypeScript |
